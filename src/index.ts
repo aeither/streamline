@@ -1,22 +1,16 @@
-import { createGroq } from "@ai-sdk/groq";
-import { generateText, tool } from "ai";
+import { createGroq } from '@ai-sdk/groq';
+import { generateText } from "ai";
 import { Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
-import { z } from "zod";
+import { tools } from './tools';
 
 dotenv.config();
 
 const groq = createGroq({
-    apiKey: process.env.GROQ_API_KEY as string,
+    apiKey: process.env.GROQ_API_KEY ?? '',
 });
 
 console.log("Initializing Discord bot...");
-
-const helloWorldTool = tool({
-    description: "A simple tool that returns 'Hello, world!' when called.",
-    parameters: z.object({}),
-    execute: async () => "Hello, world!",
-});
 
 const client = new Client({
     intents: [
@@ -40,8 +34,14 @@ client.on("messageCreate", async (message: Message) => {
         const { text } = await generateText({
             model: groq("llama-3.3-70b-versatile"),
             prompt: message.content,
-            tools: {
-                helloWorldTool,
+            tools,
+            maxSteps: 5,
+            onStepFinish({ toolCalls, toolResults, finishReason, usage }) {
+                if (toolCalls && toolCalls.length > 0) {
+                    console.log("Tool called");
+                    console.log(`${JSON.stringify(toolCalls)}`);
+                }
+                // You can log other intermediate results here if needed
             },
         });
 
