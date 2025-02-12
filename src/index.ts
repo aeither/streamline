@@ -1,8 +1,11 @@
 import { createGroq } from '@ai-sdk/groq';
+import { Agent, runSwarm } from '@ai-sdk/swarm';
 import { generateText } from "ai";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { tools } from './tools';
+
+const REQUIRE_BOT_MENTION = false; // Set to true if you want the bot to only respond to mentions
 
 dotenv.config();
 
@@ -27,17 +30,23 @@ client.once("ready", () => {
 client.on("messageCreate", async (message: Message) => {
     if (message.author.bot) return;
 
-    console.log(`Received message from ${message.author.tag}: ${message.content}`);
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    if (REQUIRE_BOT_MENTION && !message.mentions.has(client.user!)) return;
+
+    console.log(`Received mention from ${message.author.tag}: ${message.content}`);
 
     try {
         if (message.channel.type === ChannelType.GuildText || message.channel.type === ChannelType.DM) {
             await message.channel.sendTyping();
         }
 
+        // Remove the bot's mention from the message content
+        const cleanContent = message.content.replace(new RegExp(`<@!?${client.user?.id}>`, 'g'), '').trim();
+
         console.log("Generating response using Groq...");
         const { text } = await generateText({
             model: groq("llama-3.3-70b-versatile"),
-            prompt: message.content,
+            prompt: cleanContent,
             tools,
             maxSteps: 5,
             onStepFinish({ toolCalls, toolResults, finishReason, usage }) {
@@ -62,6 +71,7 @@ client.on("messageCreate", async (message: Message) => {
         await message.reply(errorMessage);
     }
 });
+
 
 console.log("Attempting to log in to Discord...");
 client.login(process.env.DISCORD_TOKEN as string);

@@ -14,7 +14,6 @@ async function main(prompt: string) {
     const { text } = await generateText({
       model: groq("llama-3.3-70b-versatile"),
       prompt: prompt,
-      maxTokens: 500,
     });
 
     console.log(`Generated response:\n${text}`);
