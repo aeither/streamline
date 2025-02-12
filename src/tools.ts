@@ -2,7 +2,7 @@ import { tool as createTool } from 'ai';
 import { z } from 'zod';
 
 export const weatherTool = createTool({
-    description: 'Display the weather for a location',
+    description: 'Display the weather for a location. Give anaswer once the weather is retrieved.',
     parameters: z.object({
         location: z.string().describe('The location to get the weather for'),
     }),

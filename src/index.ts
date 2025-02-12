@@ -1,6 +1,6 @@
 import { createGroq } from '@ai-sdk/groq';
 import { generateText } from "ai";
-import { Client, GatewayIntentBits, type Message } from "discord.js";
+import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { tools } from './tools';
 
@@ -30,6 +30,10 @@ client.on("messageCreate", async (message: Message) => {
     console.log(`Received message from ${message.author.tag}: ${message.content}`);
 
     try {
+        if (message.channel.type === ChannelType.GuildText || message.channel.type === ChannelType.DM) {
+            await message.channel.sendTyping();
+        }
+
         console.log("Generating response using Groq...");
         const { text } = await generateText({
             model: groq("llama-3.3-70b-versatile"),
