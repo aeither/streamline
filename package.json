@@ -1,0 +1,21 @@
+{
+  "name": "streamline",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@ai-sdk/groq": "^1.1.7",
+    "@openrouter/ai-sdk-provider": "^0.2.1",
+    "ai": "^4.1.35",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7"
+  }
+}
