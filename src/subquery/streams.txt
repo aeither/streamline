@@ -1,0 +1,54 @@
+block: Block_height
+The block at which the query should be executed. Can either be a { hash: Bytes } value containing a block hash, a { number: Int } containing the block number, or a { number_gte: Int } containing the minimum block number. In the case of number_gte, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+
+first: Int = 100
+orderBy: Stream_orderBy
+orderDirection: OrderDirection
+skip: Int = 0
+subgraphError: _SubgraphErrorPolicy_! = deny
+Set to allow to receive data even if the subgraph has skipped over errors while syncing.
+
+where: Stream_filter
+
+--
+
+Stream: A higher order entity that represents the lifetime of a stream between a sender and a receiver.
+A account can start a stream, update the flow rate, but when they close it, it is considered "dead".
+The next stream you create with the same sender and receiver will create a new stream entity.
+Therefore, multiple stream entities can be created between the same sender and receiver.
+
+id: ID!
+ID composed of: senderAddress-receiverAddress-tokenAddress-revisionIndex
+
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+currentFlowRate: BigInt!
+deposit: BigInt!
+streamedUntilUpdatedAt: BigInt!
+The amount streamed until updatedAtTimestamp/updatedAtBlock.
+The formula to get the current streamed amount is:
+streamedUntilUpdatedAt + ((currentTime in seconds) - updatedAtTimestamp) * currentFlowRate.
+
+token: Token!
+sender: Account!
+receiver: Account!
+userData: Bytes!
+The userData stored on the Stream is the last userData that was set in a FlowUpdatedEvent,
+for this particular stream. To see the historical userData for this stream, you can query the flowUpdatedEvents field.
+
+flowUpdatedEvents(
+first: Int = 100
+orderBy: FlowUpdatedEvent_orderBy
+orderDirection: OrderDirection
+skip: Int = 0
+where: FlowUpdatedEvent_filter
+): [FlowUpdatedEvent!]!
+streamPeriods(
+first: Int = 100
+orderBy: StreamPeriod_orderBy
+orderDirection: OrderDirection
+skip: Int = 0
+where: StreamPeriod_filter
+): [StreamPeriod!]!

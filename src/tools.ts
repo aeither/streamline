@@ -1,16 +1,12 @@
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { generateText, tool } from 'ai';
+import { generateObject, generateText, tool } from 'ai';
 import dotenv from "dotenv";
 import { z } from 'zod';
-import fileContent from './subgraph-schema.txt';
+import { groq, openrouter } from "./models";
+import fileContent from './subquery/streams.txt';
 
 dotenv.config();
 
-const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY as string,
-});
-
-export const weatherTool = tool({
+const weatherTool = tool({
     description: 'Display the weather for a location. Give anaswer once the weather is retrieved.',
     parameters: z.object({
         location: z.string().describe('The location to get the weather for'),
@@ -21,15 +17,15 @@ export const weatherTool = tool({
     },
 });
 
-export const createSubgraphQueryTool = tool({
+ const createSubgraphQueryTool = tool({
     description: 'Create a GraphQL query string for the Superfluid subgraph based on user requirements',
     parameters: z.object({
         message: z.string().describe('The GraphQL query string to execute'),
     }),
     execute: async ({ message }) => {
         const { text } = await generateText({
-            model: openrouter("anthropic/claude-3.5-sonnet"),
-            system: `You are a helpful assistant that generates GraphQL queries based on schema and user requirements. The schema is:${fileContent}`,
+            model: groq("llama-3.3-70b-versatile"),
+            system: `Return only the GraphQL query within a code block. The schema is: ${fileContent}`,
             prompt: message,
         });
 
@@ -40,7 +36,29 @@ export const createSubgraphQueryTool = tool({
     },
 });
 
+const generateSubgraphQueryTool = tool({
+    description: 'Create a GraphQL query string for the Superfluid subgraph based on user requirements',
+    parameters: z.object({
+        message: z.string().describe('The GraphQL query string to execute'),
+    }),
+    execute: async ({ message }) => {
+        const { object } = await generateObject({
+            model: openrouter("anthropic/claude-3.5-sonnet"),
+            system: `Return only the GraphQL query within a code block. The schema is: ${fileContent}`,
+            prompt: message,
+            schema: z.object({}),
+        });
+
+        // Extract the query string from the code block
+        const queryString = String(object).replace(/``````/g, '').trim();
+
+        return { query: queryString };
+    },
+});
+
+
 export const tools = {
     displayWeather: weatherTool,
     createSubgraphQuery: createSubgraphQueryTool,
+    // generateSubgraphQuer: generateSubgraphQueryTool,
 };

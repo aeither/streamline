@@ -1,17 +1,14 @@
-import { createGroq } from '@ai-sdk/groq';
-import { Agent, runSwarm } from '@ai-sdk/swarm';
 import { generateText } from "ai";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
+import { generateQuery } from "./actions/generateQuery";
+import { openrouter } from "./models";
 import { tools } from './tools';
 
 const REQUIRE_BOT_MENTION = false; // Set to true if you want the bot to only respond to mentions
 
 dotenv.config();
 
-const groq = createGroq({
-    apiKey: process.env.GROQ_API_KEY ?? '',
-});
 
 console.log("Initializing Discord bot...");
 
@@ -43,9 +40,13 @@ client.on("messageCreate", async (message: Message) => {
         // Remove the bot's mention from the message content
         const cleanContent = message.content.replace(new RegExp(`<@!?${client.user?.id}>`, 'g'), '').trim();
 
-        console.log("Generating response using Groq...");
+        console.log("Generating response using OpenRouter...");
+        const query = await generateQuery(cleanContent);
+        console.log("🚀 ~ client.on ~ query:", query)
+        
+        console.log("Generating response using OpenRouter...");
         const { text } = await generateText({
-            model: groq("llama-3.3-70b-versatile"),
+            model: openrouter("openai/gpt-4o-mini"),
             prompt: cleanContent,
             tools,
             maxSteps: 5,
@@ -53,6 +54,8 @@ client.on("messageCreate", async (message: Message) => {
                 if (toolCalls && toolCalls.length > 0) {
                     console.log("Tool called");
                     console.log(`${JSON.stringify(toolCalls)}`);
+                    console.log("Tool result");
+                    console.log(`${JSON.stringify(toolResults)}`);
                 }
                 // You can log other intermediate results here if needed
             },
@@ -71,7 +74,6 @@ client.on("messageCreate", async (message: Message) => {
         await message.reply(errorMessage);
     }
 });
-
 
 console.log("Attempting to log in to Discord...");
 client.login(process.env.DISCORD_TOKEN as string);
