@@ -1,7 +1,8 @@
+import { groq } from '@ai-sdk/groq';
+import { openrouter } from '@openrouter/ai-sdk-provider';
 import { generateObject, generateText, tool } from 'ai';
 import dotenv from "dotenv";
 import { z } from 'zod';
-import { groq, openrouter } from "./models";
 import fileContent from './subquery/streams.txt';
 
 dotenv.config();

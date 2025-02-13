@@ -3,7 +3,6 @@ import { generateObject } from 'ai';
 import { z } from 'zod';
 import fileContent from '../subquery/streams.txt';
 
-
 export const generateQuery = async (input: string) => {
     try {
         const result = await generateObject({
