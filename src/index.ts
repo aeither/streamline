@@ -1,8 +1,10 @@
+import { groq } from "@ai-sdk/groq";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateText } from "ai";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { generateQuery } from "./actions/generateQuery";
+import { runGeneratedQuery } from "./actions/runGeneratedQuery";
 import { tools } from './tools';
 
 const REQUIRE_BOT_MENTION = false; // Set to true if you want the bot to only respond to mentions
@@ -44,24 +46,15 @@ client.on("messageCreate", async (message: Message) => {
         const query = await generateQuery(cleanContent);
         console.log("🚀 ~ client.on ~ query:", query)
 
-        console.log("Generating response using OpenRouter...");
+        const result = await runGeneratedQuery(query);
+        console.log("🚀 ~ client.on ~ result:", result)
+        // Format the result into a readable message
+        const truncatedResult = JSON.stringify(result).slice(0, 19999);
         const { text } = await generateText({
-            model: openrouter("openai/gpt-4o-mini"),
-            prompt: cleanContent,
-            tools,
-            maxSteps: 5,
-            onStepFinish({ toolCalls, toolResults, finishReason, usage }) {
-                if (toolCalls && toolCalls.length > 0) {
-                    console.log("Tool called");
-                    console.log(`${JSON.stringify(toolCalls)}`);
-                    console.log("Tool result");
-                    console.log(`${JSON.stringify(toolResults)}`);
-                }
-                // You can log other intermediate results here if needed
-            },
+            model: groq("llama-3.3-70b-versatile"),
+            prompt: `Generate concise human friendly text version. Fetch result: ${truncatedResult}`,
         });
 
-        console.log(`Generated response: ${text}`);
         await message.reply(text || "I couldn't generate a response.");
     } catch (error) {
         console.error("Error processing message:", error);
