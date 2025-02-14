@@ -50,3 +50,6 @@ output cost 0.4
 
 llama 3.3 70b (0.2-0.4) vs google flash 2.0 (0.1-0.4) vs gpt4o-mini (0.15-0.6) vs deepseek v3 (0.14-0.28)
 
+## Testing
+
+don't confuse `bun test` for bun test runner with `bun run test` when I want to use the script for `vitest`
