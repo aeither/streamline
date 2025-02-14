@@ -1,11 +1,9 @@
 import { groq } from "@ai-sdk/groq";
-import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateText } from "ai";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { generateQuery } from "./actions/generateQuery";
 import { runGeneratedQuery } from "./actions/runGeneratedQuery";
-import { tools } from './tools';
 
 const REQUIRE_BOT_MENTION = false; // Set to true if you want the bot to only respond to mentions
 

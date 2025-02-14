@@ -1,7 +1,7 @@
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import { generateObject } from 'ai';
 import { z } from 'zod';
-import fileContent from '../subquery/streams.txt';
+import fileContent from '../subquery/graphql-schema.txt';
 
 export const generateQuery = async (input: string) => {
     try {

@@ -1,0 +1,1353 @@
+interface Event {
+id: ID!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+name: String!
+addresses: [Bytes!]!
+timestamp: BigInt!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+}
+
+type FlowUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+sender: Bytes!
+receiver: Bytes!
+flowOperator: Bytes!
+flowRate: BigInt!
+totalSenderFlowRate: BigInt!
+totalReceiverFlowRate: BigInt!
+deposit: BigInt!
+userData: Bytes!
+oldFlowRate: BigInt!
+type: Int!
+totalAmountStreamedUntilTimestamp: BigInt!
+stream: Stream!
+}
+
+type FlowOperatorUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+sender: Bytes!
+permissions: Int!
+flowRateAllowance: BigInt!
+flowOperator: FlowOperator!
+}
+
+type IndexCreatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+userData: Bytes!
+index: Index!
+}
+
+type IndexDistributionClaimedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+subscriber: Bytes!
+amount: BigInt!
+index: Index!
+}
+
+type IndexUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+oldIndexValue: BigInt!
+newIndexValue: BigInt!
+totalUnitsPending: BigInt!
+totalUnitsApproved: BigInt!
+userData: Bytes!
+index: Index!
+}
+
+type IndexSubscribedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+subscriber: Bytes!
+userData: Bytes!
+index: Index!
+}
+
+type IndexUnitsUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+subscriber: Bytes!
+units: BigInt!
+userData: Bytes!
+oldUnits: BigInt!
+index: Index!
+}
+
+type IndexUnsubscribedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+subscriber: Bytes!
+userData: Bytes!
+index: Index!
+}
+
+type SubscriptionApprovedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+subscriber: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+userData: Bytes!
+subscription: IndexSubscription!
+}
+
+type SubscriptionDistributionClaimedEvent implements Event
+@entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+subscriber: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+amount: BigInt!
+subscription: IndexSubscription!
+}
+
+type SubscriptionRevokedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+subscriber: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+userData: Bytes!
+subscription: IndexSubscription!
+}
+
+type SubscriptionUnitsUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+subscriber: Bytes!
+publisher: Bytes!
+indexId: BigInt!
+units: BigInt!
+userData: Bytes!
+oldUnits: BigInt!
+subscription: IndexSubscription!
+}
+
+type PoolCreatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+caller: Bytes!
+admin: Bytes!
+pool: Pool!
+}
+
+type PoolConnectionUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+connected: Boolean!
+userData: Bytes!
+pool: Pool!
+poolMember: PoolMember!
+}
+
+type BufferAdjustedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+bufferDelta: BigInt!
+newBufferAmount: BigInt!
+totalBufferAmount: BigInt!
+pool: Pool!
+poolDistributor: PoolDistributor!
+}
+
+type InstantDistributionUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+operator: Bytes!
+requestedAmount: BigInt!
+actualAmount: BigInt!
+totalUnits: BigInt!
+userData: Bytes!
+pool: Pool!
+poolDistributor: PoolDistributor!
+}
+
+type FlowDistributionUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+operator: Bytes!
+oldFlowRate: BigInt!
+newDistributorToPoolFlowRate: BigInt!
+newTotalDistributionFlowRate: BigInt!
+adjustmentFlowRecipient: Bytes!
+adjustmentFlowRate: BigInt!
+totalUnits: BigInt!
+userData: Bytes!
+pool: Pool!
+poolDistributor: PoolDistributor!
+}
+
+type DistributionClaimedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+claimedAmount: BigInt!
+totalClaimed: BigInt!
+pool: Pool!
+poolMember: PoolMember!
+}
+
+type MemberUnitsUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+oldUnits: BigInt!
+units: BigInt!
+totalUnits: BigInt!
+pool: Pool!
+poolMember: PoolMember!
+}
+
+type AgreementClassRegisteredEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+agreementType: Bytes!
+code: Bytes!
+}
+
+type AgreementClassUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+agreementType: Bytes!
+code: Bytes!
+}
+
+type AppRegisteredEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+app: Bytes!
+}
+
+type GovernanceReplacedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+addresses: [Bytes!]!
+oldGovernance: Bytes!
+newGovernance: Bytes!
+}
+
+type JailEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+app: Bytes!
+reason: BigInt!
+}
+
+type SuperTokenFactoryUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+newFactory: Bytes!
+}
+
+type SuperTokenLogicUpdatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+code: Bytes!
+}
+
+type RoleAdminChangedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+role: Bytes!
+previousAdminRole: Bytes!
+newAdminRole: Bytes!
+}
+
+type RoleGrantedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+role: Bytes!
+account: Bytes!
+sender: Bytes!
+}
+
+type RoleRevokedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+role: Bytes!
+account: Bytes!
+sender: Bytes!
+}
+
+type SetEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+hashedName: Bytes!
+target: Bytes!
+resolverEntry: ResolverEntry!
+}
+
+type CFAv1LiquidationPeriodChangedEvent implements Event
+@entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+governanceAddress: Bytes!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+order: BigInt!
+logIndex: BigInt!
+host: Bytes!
+superToken: Bytes!
+isKeySet: Boolean!
+liquidationPeriod: BigInt!
+}
+
+type ConfigChangedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+governanceAddress: Bytes!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+host: Bytes!
+superToken: Bytes!
+key: Bytes!
+isKeySet: Boolean!
+value: BigInt!
+}
+
+type RewardAddressChangedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+governanceAddress: Bytes!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+host: Bytes!
+superToken: Bytes!
+isKeySet: Boolean!
+rewardAddress: Bytes!
+}
+
+type PPPConfigurationChangedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+governanceAddress: Bytes!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+host: Bytes!
+superToken: Bytes!
+isKeySet: Boolean!
+liquidationPeriod: BigInt!
+patricianPeriod: BigInt!
+}
+
+type SuperTokenMinimumDepositChangedEvent implements Event
+@entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+governanceAddress: Bytes!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+host: Bytes!
+superToken: Bytes!
+isKeySet: Boolean!
+minimumDeposit: BigInt!
+}
+
+type TrustedForwarderChangedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+governanceAddress: Bytes!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+host: Bytes!
+superToken: Bytes!
+isKeySet: Boolean!
+forwarder: Bytes!
+enabled: Boolean!
+}
+
+type AgreementLiquidatedByEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+liquidatorAccount: Bytes!
+agreementClass: Bytes!
+agreementId: Bytes!
+penaltyAccount: Bytes!
+bondAccount: Bytes!
+rewardAmount: BigInt!
+bailoutAmount: BigInt!
+deposit: BigInt!
+flowRateAtLiquidation: BigInt!
+}
+
+type AgreementLiquidatedV2Event implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+agreementClass: Bytes!
+agreementId: Bytes!
+liquidatorAccount: Bytes!
+targetAccount: Bytes!
+rewardAmountReceiver: Bytes!
+rewardAmount: BigInt!
+targetAccountBalanceDelta: BigInt!
+version: BigInt!
+liquidationType: Int!
+deposit: BigInt!
+flowRateAtLiquidation: BigInt!
+rewardAccount: Bytes! @deprecated(reason: "use rewardAmountReceiver")
+}
+
+type BurnedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+operator: Bytes!
+from: Bytes!
+token: Bytes!
+amount: BigInt!
+data: Bytes!
+operatorData: Bytes!
+}
+
+type MintedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+operator: Bytes!
+to: Bytes!
+amount: BigInt!
+data: Bytes!
+token: Bytes!
+operatorData: Bytes!
+}
+
+type SentEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+operator: Bytes!
+from: Bytes!
+to: Bytes!
+token: Bytes!
+amount: BigInt!
+data: Bytes!
+operatorData: Bytes!
+}
+
+type TransferEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+from: Account!
+to: Account!
+value: BigInt!
+token: Bytes!
+}
+
+type TokenDowngradedEvent implements Event @entity(immutable: true) {
+id: ID!
+account: Account!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+amount: BigInt!
+}
+
+type TokenUpgradedEvent implements Event @entity(immutable: true) {
+id: ID!
+account: Account!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+amount: BigInt!
+}
+
+type ApprovalEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+owner: Account!
+to: Account!
+amount: BigInt!
+}
+
+type CustomSuperTokenCreatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+}
+
+type SuperTokenCreatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+}
+
+type SuperTokenLogicCreatedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+tokenLogic: Bytes!
+}
+
+type NewPICEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+pic: Bytes!
+bond: BigInt!
+exitRate: BigInt!
+}
+
+type ExitRateChangedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+exitRate: BigInt!
+}
+
+type BondIncreasedEvent implements Event @entity(immutable: true) {
+id: ID!
+transactionHash: Bytes!
+gasPrice: BigInt!
+gasUsed: BigInt!
+timestamp: BigInt!
+name: String!
+addresses: [Bytes!]!
+blockNumber: BigInt!
+logIndex: BigInt!
+order: BigInt!
+token: Bytes!
+additionalBond: BigInt!
+}
+
+type Account @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+isSuperApp: Boolean!
+inflows: [Stream!]! @derivedFrom(field: "receiver")
+outflows: [Stream!]! @derivedFrom(field: "sender")
+subscriptions: [IndexSubscription!]! @derivedFrom(field: "subscriber")
+publishedIndexes: [Index!]! @derivedFrom(field: "publisher")
+pools: [Pool!]! @derivedFrom(field: "admin")
+poolMemberships: [PoolMember!]! @derivedFrom(field: "account")
+sentTransferEvents: [TransferEvent!]! @derivedFrom(field: "from")
+receivedTransferEvents: [TransferEvent!]! @derivedFrom(field: "to")
+tokenUpgradedEvents: [TokenUpgradedEvent!]! @derivedFrom(field: "account")
+tokenDowngradedEvents: [TokenDowngradedEvent!]! @derivedFrom(field: "account")
+accountTokenSnapshots: [AccountTokenSnapshot!]! @derivedFrom(field: "account")
+}
+
+type Pool @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+totalUnits: BigInt!
+totalConnectedUnits: BigInt!
+totalDisconnectedUnits: BigInt!
+totalAmountInstantlyDistributedUntilUpdatedAt: BigInt!
+totalAmountFlowedDistributedUntilUpdatedAt: BigInt!
+totalAmountDistributedUntilUpdatedAt: BigInt!
+totalFlowAdjustmentAmountDistributedUntilUpdatedAt: BigInt!
+perUnitSettledValue: BigInt!
+perUnitFlowRate: BigInt!
+totalMembers: Int!
+totalConnectedMembers: Int!
+totalDisconnectedMembers: Int!
+adjustmentFlowRate: BigInt!
+flowRate: BigInt!
+totalBuffer: BigInt!
+token: Token!
+admin: Account!
+poolDistributors: [PoolDistributor!]! @derivedFrom(field: "pool")
+poolMembers: [PoolMember!]! @derivedFrom(field: "pool")
+poolCreatedEvent: PoolCreatedEvent! @derivedFrom(field: "pool")
+poolConnectionUpdatedEvents: [PoolConnectionUpdatedEvent!]! @derivedFrom(field: "pool")
+bufferAdjustedEvents: [BufferAdjustedEvent!]! @derivedFrom(field: "pool")
+instantDistributionUpdatedEvents: [InstantDistributionUpdatedEvent!]! @derivedFrom(field: "pool")
+flowDistributionUpdatedEvents: [FlowDistributionUpdatedEvent!]! @derivedFrom(field: "pool")
+memberUnitsUpdatedEvents: [MemberUnitsUpdatedEvent!]! @derivedFrom(field: "pool")
+distributionClaimedEvents: [DistributionClaimedEvent!]! @derivedFrom(field: "pool")
+}
+
+type PoolMember @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+units: BigInt!
+isConnected: Boolean!
+totalAmountClaimed: BigInt!
+poolTotalAmountDistributedUntilUpdatedAt: BigInt!
+totalAmountReceivedUntilUpdatedAt: BigInt!
+syncedPerUnitSettledValue: BigInt!
+syncedPerUnitFlowRate: BigInt!
+account: Account!
+pool: Pool!
+poolConnectionUpdatedEvents: [PoolConnectionUpdatedEvent!]! @derivedFrom(field: "poolMember")
+memberUnitsUpdatedEvents: [MemberUnitsUpdatedEvent!]! @derivedFrom(field: "poolMember")
+distributionClaimedEvents: [DistributionClaimedEvent!]! @derivedFrom(field: "poolMember")
+}
+
+type PoolDistributor @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+totalAmountInstantlyDistributedUntilUpdatedAt: BigInt!
+totalAmountFlowedDistributedUntilUpdatedAt: BigInt!
+totalAmountDistributedUntilUpdatedAt: BigInt!
+totalBuffer: BigInt!
+flowRate: BigInt!
+account: Account!
+pool: Pool!
+bufferAdjustedEvents: [BufferAdjustedEvent!]! @derivedFrom(field: "poolDistributor")
+instantDistributionUpdatedEvents: [InstantDistributionUpdatedEvent!]! @derivedFrom(field: "poolDistributor")
+flowDistributionUpdatedEvents: [FlowDistributionUpdatedEvent!]! @derivedFrom(field: "poolDistributor")
+}
+
+type Index @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+indexId: BigInt!
+indexValue: BigInt!
+totalSubscriptionsWithUnits: Int!
+totalUnitsPending: BigInt!
+totalUnitsApproved: BigInt!
+totalUnits: BigInt!
+totalAmountDistributedUntilUpdatedAt: BigInt!
+token: Token!
+publisher: Account!
+subscriptions: [IndexSubscription!]! @derivedFrom(field: "index")
+indexCreatedEvent: IndexCreatedEvent!
+indexDistributionClaimedEvents: [IndexDistributionClaimedEvent!]! @derivedFrom(field: "index")
+indexUpdatedEvents: [IndexUpdatedEvent!]! @derivedFrom(field: "index")
+indexSubscribedEvents: [IndexSubscribedEvent!]! @derivedFrom(field: "index")
+indexUnitsUpdatedEvents: [IndexUnitsUpdatedEvent!]! @derivedFrom(field: "index")
+indexUnsubscribedEvents: [IndexUnsubscribedEvent!]! @derivedFrom(field: "index")
+}
+
+type IndexSubscription @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+subscriber: Account!
+approved: Boolean!
+units: BigInt!
+totalAmountReceivedUntilUpdatedAt: BigInt!
+indexValueUntilUpdatedAt: BigInt!
+index: Index!
+subscriptionApprovedEvents: [SubscriptionApprovedEvent!]! @derivedFrom(field: "subscription")
+subscriptionDistributionClaimedEvents: [SubscriptionDistributionClaimedEvent!]! @derivedFrom(field: "subscription")
+subscriptionRevokedEvents: [SubscriptionRevokedEvent!]! @derivedFrom(field: "subscription")
+subscriptionUnitsUpdatedEvents: [SubscriptionUnitsUpdatedEvent!]! @derivedFrom(field: "subscription")
+}
+
+type Stream @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+currentFlowRate: BigInt!
+deposit: BigInt!
+streamedUntilUpdatedAt: BigInt!
+token: Token!
+sender: Account!
+receiver: Account!
+userData: Bytes!
+flowUpdatedEvents: [FlowUpdatedEvent!]! @derivedFrom(field: "stream")
+streamPeriods: [StreamPeriod!]! @derivedFrom(field: "stream")
+}
+
+type FlowOperator @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+permissions: Int!
+flowRateAllowanceGranted: BigInt!
+flowRateAllowanceRemaining: BigInt!
+allowance: BigInt!
+flowOperator: Bytes!
+sender: Account!
+token: Token!
+accountTokenSnapshot: AccountTokenSnapshot!
+flowOperatorUpdatedEvents: [FlowOperatorUpdatedEvent!]! @derivedFrom(field: "flowOperator")
+}
+
+type StreamPeriod @entity {
+id: ID!
+stream: Stream!
+sender: Account!
+receiver: Account!
+token: Token!
+flowRate: BigInt!
+deposit: BigInt!
+startedAtTimestamp: BigInt!
+startedAtBlockNumber: BigInt!
+startedAtEvent: FlowUpdatedEvent!
+stoppedAtTimestamp: BigInt
+stoppedAtBlockNumber: BigInt
+stoppedAtEvent: FlowUpdatedEvent
+totalAmountStreamed: BigInt
+}
+
+type TokenGovernanceConfig @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+isDefault: Boolean!
+rewardAddress: Bytes
+liquidationPeriod: BigInt
+patricianPeriod: BigInt
+minimumDeposit: BigInt
+token: Token
+}
+
+type StreamRevision @entity {
+id: ID!
+revisionIndex: Int!
+periodRevisionIndex: Int!
+mostRecentStream: Stream!
+}
+
+type Token @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+decimals: Int!
+name: String!
+symbol: String!
+isSuperToken: Boolean!
+isNativeAssetSuperToken: Boolean!
+isListed: Boolean!
+underlyingAddress: Bytes!
+underlyingToken: Token
+governanceConfig: TokenGovernanceConfig
+}
+
+type ResolverEntry @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+targetAddress: Bytes!
+isToken: Boolean!
+isListed: Boolean!
+setEvents: [SetEvent!]! @derivedFrom(field: "resolverEntry")
+}
+
+type AccountTokenSnapshot @entity {
+id: ID!
+createdAtTimestamp: BigInt!
+createdAtBlockNumber: BigInt!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+isLiquidationEstimateOptimistic: Boolean!
+maybeCriticalAtTimestamp: BigInt
+totalNumberOfActiveStreams: Int!
+totalCFANumberOfActiveStreams: Int!
+totalGDANumberOfActiveStreams: Int!
+activeOutgoingStreamCount: Int!
+activeCFAOutgoingStreamCount: Int!
+activeGDAOutgoingStreamCount: Int!
+activeIncomingStreamCount: Int!
+totalNumberOfClosedStreams: Int!
+totalCFANumberOfClosedStreams: Int!
+totalGDANumberOfClosedStreams: Int!
+inactiveOutgoingStreamCount: Int!
+inactiveCFAOutgoingStreamCount: Int!
+inactiveGDAOutgoingStreamCount: Int!
+inactiveIncomingStreamCount: Int!
+totalSubscriptionsWithUnits: Int!
+totalApprovedSubscriptions: Int!
+totalMembershipsWithUnits: Int!
+totalConnectedMemberships: Int!
+adminOfPoolCount: Int!
+balanceUntilUpdatedAt: BigInt!
+balanceLastUpdatedFromRpcBlocknumber: BigInt
+totalDeposit: BigInt!
+totalCFADeposit: BigInt!
+totalGDADeposit: BigInt!
+totalNetFlowRate: BigInt!
+totalCFANetFlowRate: BigInt!
+totalInflowRate: BigInt!
+totalOutflowRate: BigInt!
+totalCFAOutflowRate: BigInt!
+totalGDAOutflowRate: BigInt!
+totalAmountStreamedInUntilUpdatedAt: BigInt!
+totalAmountStreamedOutUntilUpdatedAt: BigInt!
+totalCFAAmountStreamedOutUntilUpdatedAt: BigInt!
+totalAmountStreamedUntilUpdatedAt: BigInt!
+totalCFAAmountStreamedUntilUpdatedAt: BigInt!
+totalAmountTransferredUntilUpdatedAt: BigInt!
+account: Account!
+token: Token!
+flowOperators: [FlowOperator!]! @derivedFrom(field: "accountTokenSnapshot")
+accountTokenSnapshotLogs: [AccountTokenSnapshotLog!]! @derivedFrom(field: "accountTokenSnapshot")
+}
+
+type AccountTokenSnapshotLog @entity {
+id: ID!
+timestamp: BigInt!
+blockNumber: BigInt!
+
+transactionHash: Bytes!
+logIndex: BigInt!
+order: BigInt!
+triggeredByEventName: String!
+
+maybeCriticalAtTimestamp: BigInt
+totalNumberOfActiveStreams: Int!
+totalCFANumberOfActiveStreams: Int!
+totalGDANumberOfActiveStreams: Int!
+activeOutgoingStreamCount: Int!
+activeCFAOutgoingStreamCount: Int!
+activeGDAOutgoingStreamCount: Int!
+activeIncomingStreamCount: Int!
+totalNumberOfClosedStreams: Int!
+totalCFANumberOfClosedStreams: Int!
+totalGDANumberOfClosedStreams: Int!
+inactiveOutgoingStreamCount: Int!
+inactiveCFAOutgoingStreamCount: Int!
+inactiveGDAOutgoingStreamCount: Int!
+inactiveIncomingStreamCount: Int!
+totalSubscriptionsWithUnits: Int!
+totalApprovedSubscriptions: Int!
+totalMembershipsWithUnits: Int!
+totalConnectedMemberships: Int!
+balance: BigInt!
+totalDeposit: BigInt!
+totalCFADeposit: BigInt!
+totalGDADeposit: BigInt!
+totalNetFlowRate: BigInt!
+totalCFANetFlowRate: BigInt!
+totalInflowRate: BigInt!
+totalOutflowRate: BigInt!
+totalCFAOutflowRate: BigInt!
+totalGDAOutflowRate: BigInt!
+totalAmountStreamedIn: BigInt!
+totalAmountStreamedOut: BigInt!
+totalCFAAmountStreamedOut: BigInt!
+totalAmountStreamed: BigInt!
+totalCFAAmountStreamed: BigInt!
+totalAmountTransferred: BigInt!
+
+account: Account!
+token: Token!
+accountTokenSnapshot: AccountTokenSnapshot!
+}
+
+type TokenStatistic @entity {
+id: ID!
+updatedAtTimestamp: BigInt!
+updatedAtBlockNumber: BigInt!
+
+totalNumberOfActiveStreams: Int!
+totalCFANumberOfActiveStreams: Int!
+totalGDANumberOfActiveStreams: Int!
+totalNumberOfClosedStreams: Int!
+totalCFANumberOfClosedStreams: Int!
+totalGDANumberOfClosedStreams: Int!
+totalNumberOfIndexes: Int!
+totalNumberOfActiveIndexes: Int!
+totalSubscriptionsWithUnits: Int!
+totalApprovedSubscriptions: Int!
+totalNumberOfPools: Int!
+totalNumberOfActivePools: Int!
+totalMembershipsWithUnits: Int!
+totalConnectedMemberships: Int!
+totalDeposit: BigInt!
+totalCFADeposit: BigInt!
+totalGDADeposit: BigInt!
+totalOutflowRate: BigInt!
+totalCFAOutflowRate: BigInt!
+totalGDAOutflowRate: BigInt!
+totalAmountStreamedUntilUpdatedAt: BigInt!
+totalCFAAmountStreamedUntilUpdatedAt: BigInt!
+totalAmountTransferredUntilUpdatedAt: BigInt!
+totalAmountDistributedUntilUpdatedAt: BigInt!
+totalSupply: BigInt!
+totalNumberOfAccounts: Int!
+totalNumberOfHolders: Int!
+
+token: Token!
+tokenStatisticLogs: [TokenStatisticLog!]! @derivedFrom(field: "tokenStatistic")
+}
+
+type TokenStatisticLog @entity {
+id: ID!
+timestamp: BigInt!
+blockNumber: BigInt!
+
+transactionHash: Bytes!
+logIndex: BigInt!
+order: BigInt!
+triggeredByEventName: String!
+
+totalNumberOfActiveStreams: Int!
+totalCFANumberOfActiveStreams: Int!
+totalGDANumberOfActiveStreams: Int!
+totalNumberOfClosedStreams: Int!
+totalCFANumberOfClosedStreams: Int!
+totalGDANumberOfClosedStreams: Int!
+totalNumberOfIndexes: Int!
+totalNumberOfActiveIndexes: Int!
+totalSubscriptionsWithUnits: Int!
+totalApprovedSubscriptions: Int!
+totalNumberOfPools: Int!
+totalNumberOfActivePools: Int!
+totalMembershipsWithUnits: Int!
+totalConnectedMemberships: Int!
+totalDeposit: BigInt!
+totalCFADeposit: BigInt!
+totalGDADeposit: BigInt!
+totalOutflowRate: BigInt!
+totalCFAOutflowRate: BigInt!
+totalGDAOutflowRate: BigInt!
+totalAmountStreamed: BigInt!
+totalCFAAmountStreamed: BigInt!
+totalAmountTransferred: BigInt!
+totalAmountDistributed: BigInt!
+totalSupply: BigInt!
+totalNumberOfAccounts: Int!
+totalNumberOfHolders: Int!
+
+token: Token!
+tokenStatistic: TokenStatistic!
+}
+
+type SFMeta @entity {
+id: ID!
+timestamp: BigInt!
+blockNumber: BigInt!
+
+configuration: String!
+branch: String!
+packageVersion: String!
+}
