@@ -1,7 +1,7 @@
 // File: test/generateQuery.test.ts
 
+import { beforeAll, describe, expect, test } from "bun:test";
 import dotenv from 'dotenv';
-import { beforeAll, describe, expect, it } from 'vitest';
 import { generateQuery } from '../src/actions/generateQuery';
 
 beforeAll(() => {
@@ -9,11 +9,12 @@ beforeAll(() => {
 });
 
 describe('generateQuery', () => {
-    it('should generate a query successfully', async () => {
-        const input = 'Generate a query for someField';
+    test('should generate a query successfully', async () => {
+        const input = 'What pools is 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 a part of? provide with main info such as flowrate, units';
         const result = await generateQuery(input);
-        console.log("🚀 ~ it ~ result:", result)
-        expect(result).toBeUndefined();
+        console.log("🚀 ~ test ~ result:", result)
+        expect(result).toBeDefined();
         expect(typeof result).toBe('string');
+        expect(result).toContain('someField');
     });
 });
