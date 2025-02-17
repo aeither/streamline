@@ -1,5 +1,5 @@
 import { groq } from "@ai-sdk/groq";
-import { generateText } from "ai";
+import { synthetizeResponse } from "./actions/synthetizeResponse";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { determineChain } from "./actions/determineChain";
@@ -51,14 +51,14 @@ client.on("messageCreate", async (message: Message) => {
         console.log("Executing query...");
         const result = await runGeneratedQuery(query, subgraphUrl);
         console.log("🚀 ~ client.on ~ result:", result)
-        // Format the result into a readable message
-        const truncatedResult = JSON.stringify(result).slice(0, 19999);
-        const { text } = await generateText({
-            model: groq("llama-3.3-70b-versatile"),
-            prompt: `Generate concise human friendly text version. Fetch result: ${truncatedResult}`,
-        });
 
-        await message.reply(text || "I couldn't generate a response.");
+        console.log("Synthesizing response...");
+        const response = await synthetizeResponse(result, cleanContent);
+        
+        // Ensure the response fits within Discord's message limit
+        const truncatedResponse = response.slice(0, 19999);
+
+        await message.reply(truncatedResponse || "I couldn't generate a response.");
     } catch (error) {
         console.error("Error processing message:", error);
         let errorMessage = "Sorry, something went wrong.";
