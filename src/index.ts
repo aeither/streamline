@@ -2,6 +2,7 @@ import { groq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
+import { determineChain } from "./actions/determineChain";
 import { generateQuery } from "./actions/generateQuery";
 import { runGeneratedQuery } from "./actions/runGeneratedQuery";
 
@@ -40,11 +41,15 @@ client.on("messageCreate", async (message: Message) => {
         // Remove the bot's mention from the message content
         const cleanContent = message.content.replace(new RegExp(`<@!?${client.user?.id}>`, 'g'), '').trim();
 
+        console.log("Determining appropriate chain...");
+        const subgraphUrl = await determineChain(cleanContent);
+        console.log("Using subgraph:", subgraphUrl);
         console.log("Generating response using OpenRouter...");
         const query = await generateQuery(cleanContent);
         console.log("🚀 ~ client.on ~ query:", query)
 
-        const result = await runGeneratedQuery(query);
+        console.log("Executing query...");
+        const result = await runGeneratedQuery(query, subgraphUrl);
         console.log("🚀 ~ client.on ~ result:", result)
         // Format the result into a readable message
         const truncatedResult = JSON.stringify(result).slice(0, 19999);
