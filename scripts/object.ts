@@ -1,10 +1,16 @@
-import { openai } from '@ai-sdk/openai';
+import { cerebras } from '@ai-sdk/cerebras';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
 const { object } = await generateObject({
-    model: openai('gpt-4o-mini'),
-    schema: z.string(),
+    model: cerebras('llama-3.3-70b'),
+    schema: z.object({
+        recipe: z.object({
+            name: z.string(),
+            ingredients: z.array(z.string()),
+            steps: z.array(z.string())
+        })
+    }),
     prompt: 'Generate a lasagna recipe.',
 });
 
