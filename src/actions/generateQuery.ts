@@ -14,7 +14,9 @@ export const generateQuery = async (input: string) => {
 5. Include appropriate arguments and filters when relevant.
 6. For pagination or limiting results, use 'first: 5' by default unless specified otherwise.
 7. Do not include any explanations or comments in the output.
+
 8. If user didn't provide any token. dont use where with token.
+9. nested field or a relationship can't be used for sorting. for instance orderBy: inflows_length is not supported.
 
 The schema is:
 ${fileContent}
