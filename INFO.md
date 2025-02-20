@@ -54,6 +54,13 @@ llama 3.3 70b (0.2-0.4) vs google flash 2.0 (0.1-0.4) vs gpt4o-mini (0.15-0.6) v
 
 don't confuse `bun test` for bun test runner with `bun run test` when I want to use the script for `vitest`
 
+## drizzle-kit db
+
+npx drizzle-kit generate
+
+npx drizzle-kit push
+
+
 ## Troubleshooting
 
 bun default timeout for tests is 5000 (5 seconds).

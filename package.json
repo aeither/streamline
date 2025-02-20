@@ -10,7 +10,10 @@
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/node": "^22.13.4",
+		"@types/pg": "^8.11.11",
 		"bun-types": "^1.2.2",
+		"drizzle-kit": "^0.30.4",
+		"tsx": "^4.19.3",
 		"vitest": "^3.0.5"
 	},
 	"peerDependencies": {
@@ -26,7 +29,11 @@
 		"ai": "^4.1.35",
 		"discord.js": "^14.18.0",
 		"dotenv": "^16.4.7",
+		"drizzle-orm": "^0.39.3",
 		"graphql-request": "^7.1.2",
+		"openai": "^4.85.3",
+		"pg": "^8.13.3",
+		"postgres": "^3.4.5",
 		"zod": "^3.24.2"
 	}
 }

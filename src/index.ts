@@ -1,7 +1,8 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
-import { generateSubgraphQuery } from "./actions/generateSubgraphQuery";
+import { getSubgraphQuery } from "./actions/getSubgraphQuery";
+import { parseUserMessage } from "./actions/parseUserMessage";
 import { plan } from "./actions/plannerAgent";
 import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
 import { synthetizeResponse } from "./actions/synthetizeResponse";
@@ -57,9 +58,13 @@ client.on("messageCreate", async (message: Message) => {
         const subgraphUrl = await resolveSubgraphUrl(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
 
-        // Step 3: Generate Subgraph query
+        // Step 3: Parse user message and generate query
+        console.log("Parsing user message...");
+        const parsedMessage = await parseUserMessage(cleanContent, subgraphUrl);
+        console.log("Parsed message:", parsedMessage);
+        
         console.log("Generating Subgraph query...");
-        const query = await generateSubgraphQuery(cleanContent, subgraphUrl);
+        const query = await getSubgraphQuery(parsedMessage);
         console.log("Generated query:", query);
 
         // Step 4: Run the query
