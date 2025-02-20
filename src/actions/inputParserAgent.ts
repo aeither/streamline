@@ -9,7 +9,7 @@ interface Entity {
     normalized?: string;
 }
 
-interface TranslationResult {
+interface ParsedInput {
     cleanedInput: string;
     entities: Entity[];
 }
@@ -50,7 +50,7 @@ async function validateToken(symbol: string, subgraphUrl: string): Promise<strin
     }
 }
 
-export const translateQuery = async (input: string, subgraphUrl: string): Promise<TranslationResult> => {
+export const parseUserInput = async (input: string, subgraphUrl: string): Promise<ParsedInput> => {
     try {
         // First, identify potential entities in the input
         const { object } = await generateObject({
@@ -62,7 +62,7 @@ export const translateQuery = async (input: string, subgraphUrl: string): Promis
                 })),
                 reasoning: z.string(),
             }),
-            system: `You are a query translator agent for blockchain data. Identify:
+            system: `You are an input parser agent for blockchain data. Identify:
 
 1. Token symbols (e.g., "ETHx", "USDCx", "DAIx", "WETH")
 2. ENS names (ending in .eth)
@@ -117,7 +117,7 @@ Return array of identified entities with types and reasoning for your decisions.
             entities: validatedEntities,
         };
     } catch (error) {
-        console.error('Error translating query:', error);
+        console.error('Error parsing input:', error);
         return {
             cleanedInput: input,
             entities: [],

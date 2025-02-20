@@ -2,8 +2,8 @@ import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
 import { determineChain } from "./actions/determineChain";
-import { orchestrateQuery } from "./actions/orchestratorAgent";
-import { translateQuery } from "./actions/queryTranslatorAgent";
+import { plan } from "./actions/plannerAgent";
+import { parseUserInput } from "./actions/inputParserAgent";
 import { synthetizeResponse } from "./actions/synthetizeResponse";
 
 const REQUIRE_BOT_MENTION = false;
@@ -41,14 +41,14 @@ client.on("messageCreate", async (message: Message) => {
             ''
         ).trim();
 
-        // Step 1: Let the orchestrator decide how to handle the query
-        console.log("Orchestrating query handling...");
-        const decision = await orchestrateQuery(cleanContent);
-        console.log("Orchestrator decision:", decision);
+        // Step 1: Plan query execution
+        console.log("Planning query execution...");
+        const queryPlan = await plan(cleanContent);
+        console.log("Query execution plan:", queryPlan);
         
-        if (!decision.shouldQueryBlockchain) {
+        if (!queryPlan.shouldQueryBlockchain) {
             console.log("Providing immediate response");
-            await message.reply(decision.immediateResponse || "I understand your question, but I'm not sure how to answer it.");
+            await message.reply(queryPlan.immediateResponse || "I understand your question, but I'm not sure how to answer it.");
             return;
         }
 
@@ -57,10 +57,10 @@ client.on("messageCreate", async (message: Message) => {
         const subgraphUrl = await determineChain(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
 
-        // Step 3: Translate query
-        console.log("Translating query...");
-        const { cleanedInput, entities } = await translateQuery(cleanContent, subgraphUrl);
-        console.log("Translated input:", cleanedInput);
+        // Step 3: Parse user input
+        console.log("Parsing user input...");
+        const { cleanedInput, entities } = await parseUserInput(cleanContent, subgraphUrl);
+        console.log("Parsed input:", cleanedInput);
         console.log("Found entities:", entities);
 
         // Step 4: Create and execute GraphQL query

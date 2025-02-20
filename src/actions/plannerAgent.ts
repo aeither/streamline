@@ -2,7 +2,7 @@ import { cerebras } from '@ai-sdk/cerebras';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
-interface OrchestratorDecision {
+interface QueryPlan {
     shouldQueryBlockchain: boolean;
     immediateResponse?: string;
     suggestedAction?: 'query_subgraph' | 'explain_concept' | 'show_help' | 'list_commands';
@@ -10,7 +10,7 @@ interface OrchestratorDecision {
     reasoning: string;
 }
 
-export const orchestrateQuery = async (input: string): Promise<OrchestratorDecision> => {
+export const plan = async (input: string): Promise<QueryPlan> => {
     // Handle empty or invalid input
     if (!input?.trim()) {
         return {
@@ -31,7 +31,7 @@ export const orchestrateQuery = async (input: string): Promise<OrchestratorDecis
                 requiredTools: z.array(z.enum(['token_resolver', 'ens_resolver', 'address_validator'])).optional(),
                 reasoning: z.string(),
             }),
-            system: `You are the orchestrator agent for a Superfluid blockchain query system. Your task is to:
+            system: `You are the planner agent for a Superfluid blockchain query system. Your task is to:
 1. Determine if the query needs blockchain data or can be answered immediately
 2. Suggest which tools might be needed
 3. Provide reasoning for your decisions
@@ -72,7 +72,7 @@ Return:
             reasoning: object.reasoning,
         };
     } catch (error) {
-        console.error('Error in orchestrator agent:', error);
+        console.error('Error in planner agent:', error);
         return {
             shouldQueryBlockchain: true, // Default to querying blockchain if we can't decide
             suggestedAction: 'query_subgraph',
