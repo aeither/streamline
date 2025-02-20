@@ -1,8 +1,16 @@
 import { cosineDistance, desc, gt, sql } from 'drizzle-orm'
 
 import { db } from '../database/db'
-import { Documents } from "../database/schema"
+import { Documents, Queries } from "../database/schema"
 import { generateEmbedding } from "./openai"
+
+
+export interface VectorQueryResult {
+    id: number
+    query: string
+    timestamp: number
+    similarity: number
+}
 
 export interface VectorDocumentResult {
     id: number
@@ -13,8 +21,24 @@ export interface VectorDocumentResult {
 }
 
 export class Embeddings {
+    // Insert a query with embedding
+    async insertQuery(query: string): Promise<number> {
+        const embedding = await generateEmbedding(query)
+        const timestamp = Math.floor(Date.now() / 1000)
+
+        const [result] = await db.insert(Queries)
+            .values({
+                query,
+                timestamp,
+                embedding,
+            })
+            .returning({ id: Queries.id })
+
+        return result.id
+    }
+
     // Insert a document with embedding
-    async insert(source: string, page: number, content: string): Promise<number> {
+    async insertDoc(source: string, page: number, content: string): Promise<number> {
         const embedding = await generateEmbedding(content)
 
         const [result] = await db.insert(Documents)
@@ -29,8 +53,28 @@ export class Embeddings {
         return result.id
     }
 
-    // Query the vector db
     async query(
+        queryString: string,
+        limit = 10
+    ): Promise<VectorQueryResult[]> {
+        const embedding = await generateEmbedding(queryString)
+        const similarity = sql<number>`1 - (${cosineDistance(Queries.embedding, embedding)})`
+        const results = await db.select({
+            id: Queries.id,
+            query: Queries.query,
+            timestamp: Queries.timestamp,
+            similarity,
+        })
+            .from(Queries)
+            .where(gt(similarity, 0.5))
+            .orderBy((t) => desc(t.similarity))
+            .limit(limit)
+
+        return results
+    }
+
+    // Query the vector db
+    async queryDoc(
         queryString: string,
         limit = 10
     ): Promise<VectorDocumentResult[]> {
