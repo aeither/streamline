@@ -19,6 +19,7 @@ mock.module('../src/actions/runGeneratedQuery', () => ({
             return JSON.stringify({
                 data: {
                     tokens: [{
+                        id: '0x1234567890123456789012345678901234567890',
                         symbol: 'ETHx'
                     }]
                 }
@@ -42,9 +43,9 @@ describe('inputParserAgent', () => {
             expect(result.entities[0]).toEqual({
                 type: 'token',
                 original: 'ETHx',
-                normalized: 'ETHx'
+                normalized: '0x1234567890123456789012345678901234567890'
             });
-            expect(result.cleanedInput).toContain('ETHx');
+            expect(result.cleanedInput).toContain('0x1234567890123456789012345678901234567890');
         });
 
         test('should handle invalid token symbols', async () => {

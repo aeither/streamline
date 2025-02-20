@@ -46,7 +46,7 @@ const chains = [
 
 export const resolveSubgraphUrl = async (input: string): Promise<string> => {
     try {
-        const response = await generateText({
+        const { text } = await generateText({
             model: cerebras('llama-3.3-70b'),
             system: `You are a chain resolver for Superfluid queries. Your task is to determine which blockchain network a query is about.
 
@@ -70,7 +70,7 @@ Return ONLY the chain name exactly as listed above. No other text.`,
         });
 
         const selectedChain = chains.find(chain => 
-            chain.name.toLowerCase() === response.trim().toLowerCase()
+            chain.name.toLowerCase() === text.trim().toLowerCase()
         );
 
         return selectedChain?.url || chains[0].url; // Default to Ethereum Mainnet

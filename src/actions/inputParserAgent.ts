@@ -35,6 +35,7 @@ async function validateENS(ens: string, subgraphUrl: string): Promise<string | u
 async function validateToken(symbol: string, subgraphUrl: string): Promise<string | undefined> {
     const query = `{
         tokens(where: {symbol: "${symbol}"}) {
+            id
             symbol
         }
     }`;
@@ -43,7 +44,7 @@ async function validateToken(symbol: string, subgraphUrl: string): Promise<strin
         const resultStr = await runGeneratedQuery(query, subgraphUrl);
         const result = JSON.parse(resultStr);
         const tokens = result?.data?.tokens || [];
-        return tokens[0]?.symbol;
+        return tokens[0]?.id;
     } catch (error) {
         console.error('Error validating token:', error);
         return undefined;

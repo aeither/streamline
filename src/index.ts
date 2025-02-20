@@ -1,9 +1,9 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
-import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
-import { plan } from "./actions/plannerAgent";
 import { parseUserInput } from "./actions/inputParserAgent";
+import { plan } from "./actions/plannerAgent";
+import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
 import { synthetizeResponse } from "./actions/synthetizeResponse";
 
 const REQUIRE_BOT_MENTION = false;
