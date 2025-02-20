@@ -5,42 +5,83 @@ const chains = [
     {
         name: 'Ethereum Mainnet',
         id: 1,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-eth-mainnet',
+        url: 'https://eth-mainnet.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Base Mainnet',
+        id: 8453,
+        url: 'https://base-mainnet.subgraph.x.superfluid.dev/',
     },
     {
         name: 'Polygon',
         id: 137,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-matic',
-    },
-    {
-        name: 'Gnosis Chain (formerly xDAI)',
-        id: 100,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-xdai',
+        url: 'https://polygon-mainnet.subgraph.x.superfluid.dev/',
     },
     {
         name: 'Optimism',
         id: 10,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-optimism-mainnet',
+        url: 'https://optimism-mainnet.subgraph.x.superfluid.dev/',
     },
     {
         name: 'Arbitrum One',
         id: 42161,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-arbitrum-one',
+        url: 'https://arbitrum-one.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Gnosis Chain',
+        id: 100,
+        url: 'https://xdai-mainnet.subgraph.x.superfluid.dev/',
     },
     {
         name: 'Avalanche C-Chain',
         id: 43114,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-avalanche-c',
+        url: 'https://avalanche-c.subgraph.x.superfluid.dev/',
     },
     {
         name: 'BNB Smart Chain',
         id: 56,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-bsc-mainnet',
+        url: 'https://bsc-mainnet.subgraph.x.superfluid.dev/',
     },
     {
         name: 'Celo',
         id: 42220,
-        url: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-celo-mainnet',
+        url: 'https://celo-mainnet.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Degen Chain',
+        id: 69420,
+        url: 'https://degenchain.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Scroll',
+        id: 534352,
+        url: 'https://scroll-mainnet.subgraph.x.superfluid.dev/',
+    },
+    // Testnet chains
+    {
+        name: 'Avalanche Fuji',
+        id: 43113,
+        url: 'https://avalanche-fuji.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Sepolia',
+        id: 11155111,
+        url: 'https://eth-sepolia.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Optimism Sepolia',
+        id: 11155420,
+        url: 'https://optimism-sepolia.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Scroll Sepolia',
+        id: 534351,
+        url: 'https://scroll-sepolia.subgraph.x.superfluid.dev/',
+    },
+    {
+        name: 'Base Sepolia',
+        id: 84532,
+        url: 'https://base-sepolia.subgraph.x.superfluid.dev/',
     },
 ];
 

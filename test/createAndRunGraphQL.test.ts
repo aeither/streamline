@@ -8,32 +8,27 @@ const mockDetermineTemplate = mock(async (input: string) => {
     
     if (input.includes('streams')) {
         return {
-            type: `{
-                streams(first: 10, orderBy: currentFlowRate, orderDirection: desc) {
-                    token { symbol }
-                    currentFlowRate
-                    sender { id }
-                    receiver { id }
-                }
-            }`
+            type: 'streams',
+            variables: {
+                ADDRESS: '0x123'
+            },
+            reasoning: 'Query for streams'
         };
     }
     if (input.includes('token')) {
         return {
-            type: `{
-                token(id: "${input.includes('ETHx') ? 'ETHx' : 'USDCx'}") {
-                    symbol
-                    totalSupply
-                    totalNumberOfActiveStreams
-                }
-            }`
+            type: 'tokenStatistics',
+            variables: {
+                TOKEN_ADDRESS: '0x456'
+            },
+            reasoning: 'Query for token statistics'
         };
     }
     throw new Error('Unknown query type');
 });
 
 const mockRunQuery = mock(async (query: string, subgraphUrl: string) => {
-    if (!subgraphUrl || !subgraphUrl.includes('api.thegraph.com')) {
+    if (!subgraphUrl || !subgraphUrl.includes('subgraph.x.superfluid.dev')) {
         throw new Error('Invalid subgraph URL');
     }
     
@@ -52,11 +47,10 @@ const mockRunQuery = mock(async (query: string, subgraphUrl: string) => {
         });
     }
     if (query.includes('token')) {
-        const symbol = query.includes('ETHx') ? 'ETHx' : 'USDCx';
         return JSON.stringify({
             data: {
                 token: {
-                    symbol,
+                    symbol: 'ETHx',
                     totalSupply: '1000000000000000000',
                     totalNumberOfActiveStreams: '100'
                 }
@@ -73,7 +67,30 @@ beforeAll(() => {
 beforeEach(() => {
     // Reset mocks before each test
     mock.module('../src/actions/determineQueryTemplate', () => ({
-        determineQueryTemplate: mockDetermineTemplate
+        determineQueryTemplate: mockDetermineTemplate,
+        applyTemplate: (template: any) => {
+            // Simple mock implementation of applyTemplate
+            if (template.type === 'streams') {
+                return `{
+                    streams(where: {receiver: "${template.variables.ADDRESS}"}) {
+                        currentFlowRate
+                        token { symbol }
+                        sender { id }
+                        receiver { id }
+                    }
+                }`;
+            }
+            if (template.type === 'tokenStatistics') {
+                return `{
+                    token(id: "${template.variables.TOKEN_ADDRESS}") {
+                        symbol
+                        totalSupply
+                        totalNumberOfActiveStreams
+                    }
+                }`;
+            }
+            throw new Error('Unknown template type');
+        }
     }));
 
     mock.module('../src/actions/runGeneratedQuery', () => ({
@@ -82,7 +99,7 @@ beforeEach(() => {
 });
 
 describe('createAndRunGraphQL', () => {
-    const mockSubgraphUrl = 'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-eth-mainnet';
+    const mockSubgraphUrl = 'https://eth-mainnet.subgraph.x.superfluid.dev/';
 
     describe('query generation and execution', () => {
         test('should generate and execute streams query', async () => {

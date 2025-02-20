@@ -1,4 +1,4 @@
-import { determineQueryTemplate } from './determineQueryTemplate';
+import { determineQueryTemplate, applyTemplate } from './determineQueryTemplate';
 import { runGeneratedQuery } from './runGeneratedQuery';
 
 export const createAndRunGraphQL = async (input: string, subgraphUrl: string): Promise<string> => {
@@ -6,7 +6,7 @@ export const createAndRunGraphQL = async (input: string, subgraphUrl: string): P
         // Step 1: Determine and apply query template
         console.log("Creating GraphQL query...");
         const template = await determineQueryTemplate(input);
-        const query = template.type;
+        const query = applyTemplate(template);
         console.log("Generated query:", query);
 
         // Step 2: Execute the query
