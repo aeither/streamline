@@ -17,7 +17,7 @@ export const synthetizeResponse = async (queryResult: string, userQuestion: stri
 
 Query returned this data: ${queryResult}
 
-Craft a friendly, insightful response that explains the data and suggests related aspects to explore.`,
+Craft a friendly, joyful, exciting, concise, insightful, simple language response that explains the data.`,
         });
 
         return text.trim();

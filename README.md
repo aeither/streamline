@@ -16,9 +16,9 @@ This project was created using `bun init` in bun v1.1.30. [Bun](https://bun.sh) 
 
 ## Questions
 
-Show me the recent money streams in the Superfluid network
+Show me the recent money streams on Avalanche
 
-What are the statistics for the DAI token on Superfluid?
+What are the statistics for the DAI token on Polygon?
 
 List all the pools where user 0x1234567890123456789012345678901234567890 is a member
 
