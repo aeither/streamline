@@ -1,13 +1,10 @@
-import { groq } from "@ai-sdk/groq";
-import { synthetizeResponse } from "./actions/synthetizeResponse";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
+import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
 import { determineChain } from "./actions/determineChain";
-import { createGraphQLQuery } from "./actions/createGraphQLQuery";
-import { runGeneratedQuery } from "./actions/runGeneratedQuery";
-import { replaceEntities } from "./actions/replaceEntities";
 import { orchestrateQuery } from "./actions/orchestratorAgent";
-import { determineQueryType } from "./actions/determineQueryType";
+import { translateQuery } from "./actions/queryTranslatorAgent";
+import { synthetizeResponse } from "./actions/synthetizeResponse";
 
 const REQUIRE_BOT_MENTION = false;
 
@@ -60,27 +57,16 @@ client.on("messageCreate", async (message: Message) => {
         const subgraphUrl = await determineChain(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
 
-        // Step 3: Replace entities based on orchestrator's suggestions
-        console.log("Replacing entities...");
-        const { cleanedInput, entities } = await replaceEntities(cleanContent, subgraphUrl);
-        console.log("Cleaned input:", cleanedInput);
+        // Step 3: Translate query
+        console.log("Translating query...");
+        const { cleanedInput, entities } = await translateQuery(cleanContent, subgraphUrl);
+        console.log("Translated input:", cleanedInput);
         console.log("Found entities:", entities);
 
-        // Step 4: Determine query type
-        console.log("Determining query type...");
-        const queryType = await determineQueryType(cleanedInput);
-        console.log("Query type:", queryType);
+        // Step 4: Create and execute GraphQL query
+        const result = await createAndRunGraphQL(cleanedInput, subgraphUrl);
 
-        // Step 5: Generate and execute query
-        console.log("Creating GraphQL query...");
-        const query = await createGraphQLQuery(cleanedInput);
-        console.log("Generated query:", query);
-
-        console.log("Executing query...");
-        const result = await runGeneratedQuery(query, subgraphUrl);
-        console.log("Query result:", result);
-
-        // Step 6: Synthesize response
+        // Step 5: Synthesize response
         console.log("Synthesizing response...");
         const response = await synthetizeResponse(result, cleanedInput);
         

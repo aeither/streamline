@@ -17,7 +17,7 @@ type QueryTemplates = {
 
 const queryTemplates: QueryTemplates = {
   tokens: `{
-  tokens(first: 100) {
+  tokens(first: 20) {
     id
     symbol
     name
@@ -115,7 +115,7 @@ const queryTemplates: QueryTemplates = {
   }
 }`,
   pools: `{
-  pools(first: 100) {
+  pools(first: 30) {
     totalUnits
     totalMembers
     flowRate
@@ -131,7 +131,7 @@ const queryTemplates: QueryTemplates = {
 }`,
   userPools: `{
   pools(
-    first: 10
+    first: 20
     where: {poolMembers_: {account: "$USER_ADDRESS"}}
   ) {
     totalUnits
@@ -162,7 +162,7 @@ const queryTemplates: QueryTemplates = {
   }
 }`,
   adminPools: `{
-  pools(first: 10, where: {admin: "$ADMIN_ADDRESS"}) {
+  pools(first: 20, where: {admin: "$ADMIN_ADDRESS"}) {
     totalUnits
     totalMembers
     flowRate

@@ -9,7 +9,7 @@ interface Entity {
     normalized?: string;
 }
 
-interface ReplacementResult {
+interface TranslationResult {
     cleanedInput: string;
     entities: Entity[];
 }
@@ -50,7 +50,7 @@ async function validateToken(symbol: string, subgraphUrl: string): Promise<strin
     }
 }
 
-export const replaceEntities = async (input: string, subgraphUrl: string): Promise<ReplacementResult> => {
+export const translateQuery = async (input: string, subgraphUrl: string): Promise<TranslationResult> => {
     try {
         // First, identify potential entities in the input
         const { object } = await generateObject({
@@ -62,7 +62,7 @@ export const replaceEntities = async (input: string, subgraphUrl: string): Promi
                 })),
                 reasoning: z.string(),
             }),
-            system: `You are an entity extractor for blockchain data. Identify:
+            system: `You are a query translator agent for blockchain data. Identify:
 
 1. Token symbols (e.g., "ETHx", "USDCx", "DAIx", "WETH")
 2. ENS names (ending in .eth)
@@ -73,7 +73,7 @@ Examples:
 - "What's vitalik.eth receiving?" → {type: "ens", original: "vitalik.eth"}
 - "Check 0x123... flows" → {type: "address", original: "0x123..."}
 
-Return array of identified entities with types.`,
+Return array of identified entities with types and reasoning for your decisions.`,
             prompt: input,
         });
 
@@ -117,7 +117,7 @@ Return array of identified entities with types.`,
             entities: validatedEntities,
         };
     } catch (error) {
-        console.error('Error replacing entities:', error);
+        console.error('Error translating query:', error);
         return {
             cleanedInput: input,
             entities: [],

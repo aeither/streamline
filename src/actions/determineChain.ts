@@ -1,5 +1,4 @@
 import { groq } from '@ai-sdk/groq';
-import { openrouter } from '@openrouter/ai-sdk-provider';
 import { generateText } from 'ai';
 
 const chains = [
