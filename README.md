@@ -16,16 +16,18 @@ This project was created using `bun init` in bun v1.1.30. [Bun](https://bun.sh) 
 
 ## Questions
 
+What is superfluid?
+
 Show me the recent money streams on Avalanche
 
-What are the statistics for the DAI token on Polygon?
+What are the statistics for the 0x07b24bbd834c1c546ece89ff95f71d9f13a2ebd1 token on Polygon?
+<!-- What are the statistics for the DAI token on Polygon? -->
 
-List all the pools where user 0x1234567890123456789012345678901234567890 is a member
+List all the pools where user 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 is a member on base
 
-Give me details about the account 0xabcdefabcdefabcdefabcdefabcdefabcdefabcd
+<!-- Give me details about the account 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 -->
 
-What are the pools managed by admin 0x9876543210987654321098765432109876543210?
+What are the pools managed by admin 0xB0A240F3887436A94fC2Af895103350971E271da on base?
 
-Show me all incoming and outgoing streams for address 0x2468101214161820222426283032343638404242
+Show me all incoming and outgoing streams for address 0xB0A240F3887436A94fC2Af895103350971E271da
 
-What are the details of streams between 0x1357902468013579024680135790246801357902 and 0x8642097531086420975310864209753108642097?

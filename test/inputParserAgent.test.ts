@@ -25,6 +25,16 @@ mock.module('../src/actions/runGeneratedQuery', () => ({
                 }
             });
         }
+        if (query.includes('USDCx')) {
+            return JSON.stringify({
+                data: {
+                    tokens: [{
+                        id: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+                        symbol: 'USDCx'
+                    }]
+                }
+            });
+        }
         return JSON.stringify({ data: { accounts: [], tokens: [] } });
     })
 }));
@@ -46,6 +56,19 @@ describe('inputParserAgent', () => {
                 normalized: '0x1234567890123456789012345678901234567890'
             });
             expect(result.cleanedInput).toContain('0x1234567890123456789012345678901234567890');
+        });
+
+        test('should identify token in statistics query', async () => {
+            const result = await parseUserInput('What are the statistics for the USDCx token on Avalanche?', mockSubgraphUrl);
+            expect(result.entities).toHaveLength(1);
+            expect(result.entities[0]).toEqual({
+                type: 'token',
+                original: 'USDCx',
+                normalized: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+            });
+            expect(result.cleanedInput).toContain('0x2791bca1f2de4661ed88a30c99a7a9449aa84174');
+            // Make sure we don't have any leftover token symbols in the cleaned input
+            expect(result.cleanedInput).not.toContain('USDCx');
         });
 
         test('should handle invalid token symbols', async () => {

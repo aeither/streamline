@@ -199,23 +199,38 @@ export const determineQueryTemplate = async (input: string): Promise<QueryTempla
 3. Provide reasoning for the choice
 
 Available query templates:
-1. 'tokens': Lists token information (symbol, name, etc.)
-2. 'streams': Shows streaming information for a specific address
-3. 'accountStreams': Shows streams between two specific addresses
-4. 'recentFlows': Lists the most recently updated flows
-5. 'tokenStatistics': Provides aggregate data for a specific token
-6. 'accountData': Gives detailed information about a specific account
-7. 'pools': Lists general information about distribution pools
-8. 'userPools': Shows pools that a specific user is a member of
-9. 'tokenPools': Lists pools for a specific token
-10. 'adminPools': Shows pools managed by a specific admin
+- tokens: List all tokens
+- streams: Get streams for a specific address
+- accountStreams: Get streams between two accounts
+- recentFlows: Get recent flow updates
+- tokenStatistics: Get statistics for a specific token (use when asking about token stats/metrics)
+- accountData: Get detailed account information
+- pools: List all pools
+- userPools: Get pools for a specific user
+- tokenPools: Get pools for a specific token
+- adminPools: Get pools managed by a specific admin
 
-Choose the most appropriate template based on the user's query. Extract any relevant addresses or identifiers as variables.
+Examples:
+1. "Show me ETHx streams"
+   → type: streams
+   → variables: { ADDRESS: "..." }
+
+2. "What are the statistics for USDCx?"
+   → type: tokenStatistics
+   → variables: { TOKEN_ADDRESS: "..." }
+
+3. "What are DAIx token stats on Polygon?"
+   → type: tokenStatistics
+   → variables: { TOKEN_ADDRESS: "..." }
+
+4. "List all pools"
+   → type: pools
+   → variables: {}
 
 Return:
-- type: The template to use (one of the available query types)
-- variables: Any variables needed (e.g., {"ADDRESS": "0x123...", "TOKEN_ADDRESS": "0xabc..."})
-- reasoning: Brief explanation of why this template was chosen`,
+- type: The best matching query template
+- variables: Required variables for the template
+- reasoning: Why this template was chosen`,
       prompt: input,
     });
 
@@ -224,14 +239,9 @@ Return:
       variables: object.variables,
       reasoning: object.reasoning,
     };
-  } catch (e) {
-    console.error('Error determining query template:', e);
-    // Default to tokens query if something goes wrong
-    return {
-      type: 'tokens',
-      variables: {},
-      reasoning: 'Failed to determine query type, defaulting to tokens query',
-    };
+  } catch (error) {
+    console.error('Error determining query template:', error);
+    throw error;
   }
 };
 

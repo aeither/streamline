@@ -20,7 +20,7 @@ async function validateENS(ens: string, subgraphUrl: string): Promise<string | u
             id
         }
     }`;
-    
+
     try {
         const resultStr = await runGeneratedQuery(query, subgraphUrl);
         const result = JSON.parse(resultStr);
@@ -34,17 +34,22 @@ async function validateENS(ens: string, subgraphUrl: string): Promise<string | u
 
 async function validateToken(symbol: string, subgraphUrl: string): Promise<string | undefined> {
     const query = `{
-        tokens(where: {symbol: "${symbol}"}) {
+        tokens(where: {symbol: "${symbol}", isListed: true}) {
             id
             symbol
+            isListed
         }
     }`;
-    
+
     try {
         const resultStr = await runGeneratedQuery(query, subgraphUrl);
         const result = JSON.parse(resultStr);
         const tokens = result?.data?.tokens || [];
-        return tokens[0]?.id;
+        const token = tokens[0];
+        if (!token) return undefined;
+
+        // Return the token address (id) with a special prefix so we can identify it later
+        return `__TOKEN_ADDRESS:${token.id}__`;
     } catch (error) {
         console.error('Error validating token:', error);
         return undefined;
@@ -73,18 +78,31 @@ export const parseUserInput = async (input: string, subgraphUrl: string): Promis
                 })),
                 reasoning: z.string(),
             }),
-            system: `You are an input parser agent for blockchain data. Identify:
+            system: `You are an input parser agent for blockchain data. Your primary task is to identify tokens and other entities in user queries.
 
-1. Token symbols (e.g., "ETHx", "USDCx", "DAIx", "WETH")
-2. ENS names (ending in .eth)
-3. Ethereum addresses (0x...)
+MOST IMPORTANT - Token Detection Rules:
+1. Always identify any token symbol that ends with 'x' (e.g., "USDCx", "DAIx", "ETHx")
+2. Token symbols must be detected regardless of context or position in the query
+3. Token symbols should be detected even when:
+   - They are part of a question (e.g., "What are USDCx statistics?")
+   - They appear with articles (e.g., "the USDCx token")
+   - They are mentioned with chain names (e.g., "USDCx on Avalanche")
+   - They are in possessive form (e.g., "USDCx's statistics")
 
-Examples:
-- "Show me ETHx streams" → {type: "token", original: "ETHx"}
-- "What's vitalik.eth receiving?" → {type: "ens", original: "vitalik.eth"}
-- "Check 0x123... flows" → {type: "address", original: "0x123..."}
+Example Token Detections:
+" "What are the statistics for the USDCx token on Avalanche?" → {type: "token", original: "USDCx"}
+" "Show me ETHx streams" → {type: "token", original: "ETHx"}
+" "Tell me about DAIx" → {type: "token", original: "DAIx"}
+" "Compare USDCx and ETHx" → TWO tokens: "USDCx" and "ETHx"
 
-Return array of identified entities with types and reasoning for your decisions.`,
+Other Entities to Detect:
+1. ENS names (ending in .eth)
+   Example: "vitalik.eth" → {type: "ens", original: "vitalik.eth"}
+2. Ethereum addresses (0x...)
+   Example: "0x123..." → {type: "address", original: "0x123..."}
+
+Return array of ALL identified entities with types.
+IMPORTANT: Never miss a token symbol ending in 'x' - these are crucial for queries.`,
             prompt: cleanInput,
         });
 
@@ -111,11 +129,26 @@ Return array of identified entities with types and reasoning for your decisions.
             }
 
             if (normalized) {
-                // Replace in the input if we found a valid normalized form
-                cleanedInput = cleanedInput.replace(
-                    new RegExp(entity.original, 'i'),
-                    normalized
-                );
+                if (entity.type === 'token') {
+                    // For tokens, extract the actual address from our special format
+                    const match = normalized.match(/__TOKEN_ADDRESS:(.+)__/);
+                    if (match) {
+                        const tokenAddress = match[1];
+                        // Replace the token symbol with its address in the input
+                        cleanedInput = cleanedInput.replace(
+                            new RegExp(`\\b${entity.original}\\b`, 'gi'),
+                            tokenAddress
+                        );
+                        normalized = tokenAddress;
+                    }
+                } else {
+                    // For other entities, replace as before
+                    cleanedInput = cleanedInput.replace(
+                        new RegExp(`\\b${entity.original}\\b`, 'i'),
+                        normalized
+                    );
+                }
+
                 validatedEntities.push({
                     ...entity,
                     normalized

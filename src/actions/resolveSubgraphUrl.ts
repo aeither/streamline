@@ -1,122 +1,118 @@
 import { cerebras } from '@ai-sdk/cerebras';
-import { generateText } from 'ai';
+import { generateObject } from 'ai';
+import { z } from 'zod';
 
 const chains = [
     {
-        name: 'Ethereum Mainnet',
-        id: 1,
-        url: 'https://eth-mainnet.subgraph.x.superfluid.dev/',
+        name: 'base',
+        url: 'https://base-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['base mainnet', 'base-mainnet', 'base network', 'base chain'],
     },
     {
-        name: 'Base Mainnet',
-        id: 8453,
-        url: 'https://base-mainnet.subgraph.x.superfluid.dev/',
+        name: 'ethereum',
+        url: 'https://eth-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['eth', 'eth mainnet', 'ethereum mainnet', 'mainnet'],
     },
     {
-        name: 'Polygon',
-        id: 137,
-        url: 'https://polygon-mainnet.subgraph.x.superfluid.dev/',
+        name: 'polygon',
+        url: 'https://polygon-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['matic', 'polygon mainnet', 'polygon network'],
     },
     {
-        name: 'Optimism',
-        id: 10,
-        url: 'https://optimism-mainnet.subgraph.x.superfluid.dev/',
+        name: 'avalanche',
+        url: 'https://avalanche-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['avax', 'avalanche mainnet', 'avalanche network'],
     },
     {
-        name: 'Arbitrum One',
-        id: 42161,
-        url: 'https://arbitrum-one.subgraph.x.superfluid.dev/',
+        name: 'arbitrum',
+        url: 'https://arbitrum-one.subgraph.x.superfluid.dev',
+        aliases: ['arbitrum one', 'arbitrum mainnet', 'arbitrum network'],
     },
     {
-        name: 'Gnosis Chain',
-        id: 100,
-        url: 'https://xdai-mainnet.subgraph.x.superfluid.dev/',
+        name: 'optimism',
+        url: 'https://optimism-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['optimism mainnet', 'optimism network', 'op mainnet'],
     },
     {
-        name: 'Avalanche C-Chain',
-        id: 43114,
-        url: 'https://avalanche-c.subgraph.x.superfluid.dev/',
+        name: 'celo',
+        url: 'https://celo-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['celo mainnet', 'celo network'],
     },
     {
-        name: 'BNB Smart Chain',
-        id: 56,
-        url: 'https://bsc-mainnet.subgraph.x.superfluid.dev/',
+        name: 'gnosis',
+        url: 'https://gnosis-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['xdai', 'gnosis chain', 'gnosis mainnet'],
     },
     {
-        name: 'Celo',
-        id: 42220,
-        url: 'https://celo-mainnet.subgraph.x.superfluid.dev/',
+        name: 'scroll',
+        url: 'https://scroll-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['scroll mainnet', 'scroll network'],
     },
     {
-        name: 'Degen Chain',
-        id: 69420,
-        url: 'https://degenchain.subgraph.x.superfluid.dev/',
+        name: 'degen',
+        url: 'https://degen-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['degen chain', 'degen mainnet', 'degen network'],
+    },
+    // Testnets
+    {
+        name: 'sepolia',
+        url: 'https://eth-sepolia.subgraph.x.superfluid.dev',
+        aliases: ['eth sepolia', 'ethereum sepolia', 'sepolia testnet'],
     },
     {
-        name: 'Scroll',
-        id: 534352,
-        url: 'https://scroll-mainnet.subgraph.x.superfluid.dev/',
-    },
-    // Testnet chains
-    {
-        name: 'Avalanche Fuji',
-        id: 43113,
-        url: 'https://avalanche-fuji.subgraph.x.superfluid.dev/',
+        name: 'mumbai',
+        url: 'https://polygon-mumbai.subgraph.x.superfluid.dev',
+        aliases: ['polygon mumbai', 'polygon testnet', 'mumbai testnet'],
     },
     {
-        name: 'Sepolia',
-        id: 11155111,
-        url: 'https://eth-sepolia.subgraph.x.superfluid.dev/',
-    },
-    {
-        name: 'Optimism Sepolia',
-        id: 11155420,
-        url: 'https://optimism-sepolia.subgraph.x.superfluid.dev/',
-    },
-    {
-        name: 'Scroll Sepolia',
-        id: 534351,
-        url: 'https://scroll-sepolia.subgraph.x.superfluid.dev/',
-    },
-    {
-        name: 'Base Sepolia',
-        id: 84532,
-        url: 'https://base-sepolia.subgraph.x.superfluid.dev/',
+        name: 'fuji',
+        url: 'https://avalanche-fuji.subgraph.x.superfluid.dev',
+        aliases: ['avalanche fuji', 'avalanche testnet', 'fuji testnet'],
     },
 ];
 
 export const resolveSubgraphUrl = async (input: string): Promise<string> => {
     try {
-        const { text } = await generateText({
+        // First try to detect chain from input
+        const { object } = await generateObject({
             model: cerebras('llama-3.3-70b'),
-            system: `You are a chain resolver for Superfluid queries. Your task is to determine which blockchain network a query is about.
+            schema: z.object({
+                chainName: z.string(),
+                reasoning: z.string(),
+            }),
+            system: `You are a blockchain network detector. Your task is to identify which blockchain network a user's query refers to.
 
-Available chains:
-${chains.map(chain => `- ${chain.name} (Chain ID: ${chain.id})`).join('\n')}
+Available networks:
+${chains.map(chain => `- ${chain.name} (aliases: ${chain.aliases.join(', ')})`).join('\n')}
 
-If no specific chain is mentioned:
-1. Default to Ethereum Mainnet for token symbols starting with 'ETH'
-2. Default to Polygon for token symbols starting with 'MATIC'
-3. Otherwise, use Ethereum Mainnet
+Return:
+- chainName: The name of the chain mentioned (exactly as shown in the list)
+- reasoning: Why you chose this chain
 
+If no chain is explicitly mentioned, return an empty string for chainName.
 Examples:
-- "Show me streams on Polygon" → Polygon
-- "What's happening on Arbitrum?" → Arbitrum One
-- "Check ETHx flows" → Ethereum Mainnet
-- "Show MATICx streams" → Polygon
-- "List all streams" → Ethereum Mainnet
-
-Return ONLY the chain name exactly as listed above. No other text.`,
+- "Show me streams on Polygon" → chainName: "polygon"
+- "What's happening on Base?" → chainName: "base"
+- "Show me all streams" → chainName: ""`,
             prompt: input,
         });
 
-        const selectedChain = chains.find(chain => 
-            chain.name.toLowerCase() === text.trim().toLowerCase()
-        );
+        // If a chain was detected, find its URL
+        if (object.chainName) {
+            const selectedChain = chains.find(chain => 
+                chain.name.toLowerCase() === object.chainName.toLowerCase() ||
+                chain.aliases.some(alias => alias.toLowerCase() === object.chainName.toLowerCase())
+            );
+            if (selectedChain) return selectedChain.url;
+        }
 
-        return selectedChain?.url || chains[0].url; // Default to Ethereum Mainnet
+        // If no chain was detected or found, default to Base
+        const baseChain = chains.find(chain => chain.name === 'base');
+        if (!baseChain) throw new Error('Default chain (Base) not found in configuration');
+        return baseChain.url;
+
     } catch (error) {
         console.error('Error resolving subgraph URL:', error);
-        return chains[0].url; // Default to Ethereum Mainnet on error
+        throw error;
     }
 };

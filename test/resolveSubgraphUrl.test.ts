@@ -7,99 +7,65 @@ beforeAll(() => {
 });
 
 describe('resolveSubgraphUrl', () => {
-    describe('mainnet chain detection', () => {
-        test('should detect Ethereum Mainnet from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Ethereum Mainnet');
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
+    describe('chain detection', () => {
+        test('should detect Base chain', async () => {
+            const url = await resolveSubgraphUrl('Show me streams on Base');
+            expect(url).toBe('https://base-mainnet.subgraph.x.superfluid.dev');
         });
 
-        test('should detect Base Mainnet from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Base Mainnet');
-            expect(result).toBe('https://base-mainnet.subgraph.x.superfluid.dev/');
+        test('should detect Polygon chain', async () => {
+            const url = await resolveSubgraphUrl('Show me streams on Polygon');
+            expect(url).toBe('https://polygon-mainnet.subgraph.x.superfluid.dev');
         });
 
-        test('should detect Polygon from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Polygon');
-            expect(result).toBe('https://polygon-mainnet.subgraph.x.superfluid.dev/');
+        test('should detect Avalanche chain', async () => {
+            const url = await resolveSubgraphUrl('Show me streams on Avalanche');
+            expect(url).toBe('https://avalanche-mainnet.subgraph.x.superfluid.dev');
         });
 
-        test('should detect Arbitrum from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('What is happening on Arbitrum One?');
-            expect(result).toBe('https://arbitrum-one.subgraph.x.superfluid.dev/');
-        });
-
-        test('should detect Scroll from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Scroll');
-            expect(result).toBe('https://scroll-mainnet.subgraph.x.superfluid.dev/');
-        });
-
-        test('should detect Degen Chain from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Degen Chain');
-            expect(result).toBe('https://degenchain.subgraph.x.superfluid.dev/');
-        });
-    });
-
-    describe('testnet chain detection', () => {
-        test('should detect Sepolia from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Sepolia');
-            expect(result).toBe('https://eth-sepolia.subgraph.x.superfluid.dev/');
-        });
-
-        test('should detect Optimism Sepolia from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Optimism Sepolia');
-            expect(result).toBe('https://optimism-sepolia.subgraph.x.superfluid.dev/');
-        });
-
-        test('should detect Base Sepolia from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Base Sepolia');
-            expect(result).toBe('https://base-sepolia.subgraph.x.superfluid.dev/');
-        });
-
-        test('should detect Avalanche Fuji from explicit mention', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on Avalanche Fuji');
-            expect(result).toBe('https://avalanche-fuji.subgraph.x.superfluid.dev/');
-        });
-    });
-
-    describe('token-based inference', () => {
-        test('should default to Ethereum for ETH-based tokens', async () => {
-            const result = await resolveSubgraphUrl('Show me ETHx streams');
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
-        });
-
-        test('should default to Polygon for MATIC-based tokens', async () => {
-            const result = await resolveSubgraphUrl('Show me MATICx streams');
-            expect(result).toBe('https://polygon-mainnet.subgraph.x.superfluid.dev/');
+        test('should detect chain aliases', async () => {
+            const url = await resolveSubgraphUrl('Show me streams on AVAX');
+            expect(url).toBe('https://avalanche-mainnet.subgraph.x.superfluid.dev');
         });
     });
 
     describe('default behavior', () => {
-        test('should default to Ethereum Mainnet when no chain is specified', async () => {
-            const result = await resolveSubgraphUrl('Show me all streams');
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
+        test('should default to Base when no chain is specified', async () => {
+            const url = await resolveSubgraphUrl('Show me all streams');
+            expect(url).toBe('https://base-mainnet.subgraph.x.superfluid.dev');
         });
 
-        test('should default to Ethereum Mainnet for invalid chain names', async () => {
-            const result = await resolveSubgraphUrl('Show me streams on InvalidChain');
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
+        test('should default to Base for simple token queries', async () => {
+            const url = await resolveSubgraphUrl('Show me USDCx streams');
+            expect(url).toBe('https://base-mainnet.subgraph.x.superfluid.dev');
+        });
+
+        test('should default to Base for statistics queries', async () => {
+            const url = await resolveSubgraphUrl('What are the statistics for USDCx?');
+            expect(url).toBe('https://base-mainnet.subgraph.x.superfluid.dev');
         });
     });
 
     describe('error handling', () => {
+        test('should handle invalid chain names', async () => {
+            const url = await resolveSubgraphUrl('Show me streams on InvalidChain');
+            expect(url).toBe('https://base-mainnet.subgraph.x.superfluid.dev');
+        });
+
         test('should handle empty input', async () => {
-            const result = await resolveSubgraphUrl('');
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
+            const url = await resolveSubgraphUrl('');
+            expect(url).toBe('https://base-mainnet.subgraph.x.superfluid.dev');
         });
 
         test('should handle null input', async () => {
             // @ts-ignore - testing null input
             const result = await resolveSubgraphUrl(null);
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
+            expect(result).toBe('https://base-mainnet.subgraph.x.superfluid.dev/');
         });
 
         test('should handle very long input', async () => {
             const result = await resolveSubgraphUrl('x'.repeat(10000));
-            expect(result).toBe('https://eth-mainnet.subgraph.x.superfluid.dev/');
+            expect(result).toBe('https://base-mainnet.subgraph.x.superfluid.dev/');
         });
     });
 });
