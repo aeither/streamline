@@ -3,7 +3,7 @@
 import { beforeAll, describe, expect, mock, test } from "bun:test";
 import dotenv from 'dotenv';
 import { determineChain } from '../actions/determineChain';
-import { runGeneratedQuery } from '../actions/runGeneratedQuery';
+import { runGeneratedQuery } from '../utils/runGeneratedQuery';
 import { generateQuery } from './generateQuery';
 
 beforeAll(() => {

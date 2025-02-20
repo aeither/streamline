@@ -1,7 +1,7 @@
 import { cerebras } from '@ai-sdk/cerebras';
 import { generateObject } from 'ai';
 import { z } from 'zod';
-import { runGeneratedQuery } from './runGeneratedQuery';
+import { runGeneratedQuery } from '../utils/runGeneratedQuery';
 
 interface Entity {
     type: 'token' | 'ens' | 'address';
