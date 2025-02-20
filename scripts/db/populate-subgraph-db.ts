@@ -1,4 +1,4 @@
-import { Embeddings } from "../src/utils/embeddings";
+import { Embeddings } from "../../src/utils/embeddings";
 
 const QUERIES = [
     `{

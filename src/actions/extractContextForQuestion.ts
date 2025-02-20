@@ -1,6 +1,6 @@
 import { cerebras } from '@ai-sdk/cerebras';
 import { generateText } from 'ai';
-import { Embeddings, type VectorDocumentResult } from '../utils/embeddings';
+import { Embeddings } from '../utils/embeddings';
 
 const embeddings = new Embeddings();
 
@@ -11,8 +11,8 @@ export async function extractContextForQuestion(
         return undefined;
     }
 
-    const searchResults: VectorDocumentResult[] = await embeddings.query(question);
-    const context = searchResults.map(result => result.content).join('\n\n');
+    const searchResults = await embeddings.queryQuery(question);
+    const context = searchResults.map(result => result.query).join('\n\n');
 
     if (context.trim().length === 0) {
         return undefined;
