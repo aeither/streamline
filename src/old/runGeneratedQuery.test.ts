@@ -2,9 +2,9 @@
 
 import { beforeAll, describe, expect, mock, test } from "bun:test";
 import dotenv from 'dotenv';
-import { determineChain } from '../src/actions/determineChain';
-import { generateQuery } from '../src/actions/generateQuery';
-import { runGeneratedQuery } from '../src/actions/runGeneratedQuery';
+import { determineChain } from '../actions/determineChain';
+import { runGeneratedQuery } from '../actions/runGeneratedQuery';
+import { generateQuery } from './generateQuery';
 
 beforeAll(() => {
     dotenv.config();

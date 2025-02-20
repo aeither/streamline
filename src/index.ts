@@ -3,13 +3,15 @@ import { synthetizeResponse } from "./actions/synthetizeResponse";
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { determineChain } from "./actions/determineChain";
-import { generateQuery } from "./actions/generateQuery";
+import { createGraphQLQuery } from "./actions/createGraphQLQuery";
 import { runGeneratedQuery } from "./actions/runGeneratedQuery";
+import { replaceEntities } from "./actions/replaceEntities";
+import { evaluateImmediateResponse } from "./actions/evaluateImmediateResponse";
+import { determineQueryType } from "./actions/determineQueryType";
 
-const REQUIRE_BOT_MENTION = false; // Set to true if you want the bot to only respond to mentions
+const REQUIRE_BOT_MENTION = false;
 
 dotenv.config();
-
 
 console.log("Initializing Discord bot...");
 
@@ -27,11 +29,9 @@ client.once("ready", () => {
 
 client.on("messageCreate", async (message: Message) => {
     if (message.author.bot) return;
+    if (REQUIRE_BOT_MENTION && client.user && !message.mentions.has(client.user.id)) return;
 
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
-    if (REQUIRE_BOT_MENTION && !message.mentions.has(client.user!)) return;
-
-    console.log(`Received mention from ${message.author.tag}: ${message.content}`);
+    console.log(`Received message from ${message.author.tag}: ${message.content}`);
 
     try {
         if (message.channel.type === ChannelType.GuildText || message.channel.type === ChannelType.DM) {
@@ -39,25 +39,52 @@ client.on("messageCreate", async (message: Message) => {
         }
 
         // Remove the bot's mention from the message content
-        const cleanContent = message.content.replace(new RegExp(`<@!?${client.user?.id}>`, 'g'), '').trim();
+        const cleanContent = message.content.replace(
+            client.user ? new RegExp(`<@!?${client.user.id}>`, 'g') : /^/, 
+            ''
+        ).trim();
 
+        // Step 1: Evaluate if immediate response is possible
+        console.log("Evaluating if immediate response is possible...");
+        const evaluation = await evaluateImmediateResponse(cleanContent);
+        
+        if (evaluation.shouldAnswerImmediately && evaluation.immediateResponse) {
+            console.log("Providing immediate response");
+            await message.reply(evaluation.immediateResponse);
+            return;
+        }
+
+        // Step 2: Determine subgraph URL
         console.log("Determining appropriate chain...");
         const subgraphUrl = await determineChain(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
-        console.log("Generating response using OpenRouter...");
-        const query = await generateQuery(cleanContent);
-        console.log("🚀 ~ client.on ~ query:", query)
+
+        // Step 3: Replace entities (tokens, ENS names, addresses)
+        console.log("Replacing entities...");
+        const { cleanedInput, entities } = await replaceEntities(cleanContent, subgraphUrl);
+        console.log("Cleaned input:", cleanedInput);
+        console.log("Found entities:", entities);
+
+        // Step 4: Determine query type
+        console.log("Determining query type...");
+        const queryType = await determineQueryType(cleanedInput);
+        console.log("Query type:", queryType);
+
+        // Step 5: Generate and execute query
+        console.log("Creating GraphQL query...");
+        const query = await createGraphQLQuery(cleanedInput);
+        console.log("Generated query:", query);
 
         console.log("Executing query...");
         const result = await runGeneratedQuery(query, subgraphUrl);
-        console.log("🚀 ~ client.on ~ result:", result)
+        console.log("Query result:", result);
 
+        // Step 6: Synthesize response
         console.log("Synthesizing response...");
-        const response = await synthetizeResponse(result, cleanContent);
+        const response = await synthetizeResponse(result, cleanedInput);
         
         // Ensure the response fits within Discord's message limit
         const truncatedResponse = response.slice(0, 19999);
-
         await message.reply(truncatedResponse || "I couldn't generate a response.");
     } catch (error) {
         console.error("Error processing message:", error);
