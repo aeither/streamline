@@ -51,6 +51,16 @@ async function validateToken(symbol: string, subgraphUrl: string): Promise<strin
 }
 
 export const parseUserInput = async (input: string, subgraphUrl: string): Promise<ParsedInput> => {
+    // Handle null/undefined input
+    if (!input) {
+        return {
+            cleanedInput: '',
+            entities: [],
+        };
+    }
+
+    const cleanInput = input.toString();
+
     try {
         // First, identify potential entities in the input
         const { object } = await generateObject({
@@ -74,10 +84,10 @@ Examples:
 - "Check 0x123... flows" → {type: "address", original: "0x123..."}
 
 Return array of identified entities with types and reasoning for your decisions.`,
-            prompt: input,
+            prompt: cleanInput,
         });
 
-        let cleanedInput = input;
+        let cleanedInput = cleanInput;
         const validatedEntities: Entity[] = [];
 
         // Validate and normalize each entity
@@ -91,12 +101,12 @@ Return array of identified entities with types and reasoning for your decisions.
                 case 'ens':
                     normalized = await validateENS(entity.original, subgraphUrl);
                     break;
-                case 'address':
+                case 'address': {
                     // Addresses are used as-is if they match the format
-                    normalized = entity.original.match(/^0x[a-fA-F0-9]{40}$/) 
-                        ? entity.original.toLowerCase()
-                        : undefined;
+                    const addressMatch = entity.original.match(/^0x[a-fA-F0-9]{40}$/i);
+                    normalized = addressMatch ? entity.original.toLowerCase() : undefined;
                     break;
+                }
             }
 
             if (normalized) {
@@ -119,7 +129,7 @@ Return array of identified entities with types and reasoning for your decisions.
     } catch (error) {
         console.error('Error parsing input:', error);
         return {
-            cleanedInput: input,
+            cleanedInput: cleanInput,
             entities: [],
         };
     }

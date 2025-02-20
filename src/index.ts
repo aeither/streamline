@@ -1,7 +1,7 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
-import { determineChain } from "./actions/determineChain";
+import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
 import { plan } from "./actions/plannerAgent";
 import { parseUserInput } from "./actions/inputParserAgent";
 import { synthetizeResponse } from "./actions/synthetizeResponse";
@@ -52,9 +52,9 @@ client.on("messageCreate", async (message: Message) => {
             return;
         }
 
-        // Step 2: Determine subgraph URL
-        console.log("Determining appropriate chain...");
-        const subgraphUrl = await determineChain(cleanContent);
+        // Step 2: Resolve subgraph URL
+        console.log("Resolving Superfluid subgraph URL...");
+        const subgraphUrl = await resolveSubgraphUrl(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
 
         // Step 3: Parse user input
