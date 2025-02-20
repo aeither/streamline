@@ -1,7 +1,7 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
-import { parseUserInput } from "./actions/inputParserAgent";
+import { generateSubgraphQuery } from "./actions/generateSubgraphQuery";
 import { plan } from "./actions/plannerAgent";
 import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
 import { synthetizeResponse } from "./actions/synthetizeResponse";
@@ -57,18 +57,17 @@ client.on("messageCreate", async (message: Message) => {
         const subgraphUrl = await resolveSubgraphUrl(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
 
-        // Step 3: Parse user input
-        console.log("Parsing user input...");
-        const { cleanedInput, entities } = await parseUserInput(cleanContent, subgraphUrl);
-        console.log("Parsed input:", cleanedInput);
-        console.log("Found entities:", entities);
+        // Step 3: Generate Subgraph query
+        console.log("Generating Subgraph query...");
+        const query = await generateSubgraphQuery(cleanContent, subgraphUrl);
+        console.log("Generated query:", query);
 
-        // Step 4: Create and execute GraphQL query
-        const result = await createAndRunGraphQL(cleanedInput, subgraphUrl);
+        // Step 4: Run the query
+        const result = await createAndRunGraphQL(query, subgraphUrl);
 
         // Step 5: Synthesize response
         console.log("Synthesizing response...");
-        const response = await synthetizeResponse(result, cleanedInput);
+        const response = await synthetizeResponse(result, cleanContent);
         
         // Ensure the response fits within Discord's message limit
         const truncatedResponse = response.slice(0, 19999);
