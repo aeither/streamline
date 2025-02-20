@@ -6,7 +6,7 @@ import { determineChain } from "./actions/determineChain";
 import { createGraphQLQuery } from "./actions/createGraphQLQuery";
 import { runGeneratedQuery } from "./actions/runGeneratedQuery";
 import { replaceEntities } from "./actions/replaceEntities";
-import { evaluateImmediateResponse } from "./actions/evaluateImmediateResponse";
+import { orchestrateQuery } from "./actions/orchestratorAgent";
 import { determineQueryType } from "./actions/determineQueryType";
 
 const REQUIRE_BOT_MENTION = false;
@@ -44,13 +44,14 @@ client.on("messageCreate", async (message: Message) => {
             ''
         ).trim();
 
-        // Step 1: Evaluate if immediate response is possible
-        console.log("Evaluating if immediate response is possible...");
-        const evaluation = await evaluateImmediateResponse(cleanContent);
+        // Step 1: Let the orchestrator decide how to handle the query
+        console.log("Orchestrating query handling...");
+        const decision = await orchestrateQuery(cleanContent);
+        console.log("Orchestrator decision:", decision);
         
-        if (evaluation.shouldAnswerImmediately && evaluation.immediateResponse) {
+        if (!decision.shouldQueryBlockchain) {
             console.log("Providing immediate response");
-            await message.reply(evaluation.immediateResponse);
+            await message.reply(decision.immediateResponse || "I understand your question, but I'm not sure how to answer it.");
             return;
         }
 
@@ -59,7 +60,7 @@ client.on("messageCreate", async (message: Message) => {
         const subgraphUrl = await determineChain(cleanContent);
         console.log("Using subgraph:", subgraphUrl);
 
-        // Step 3: Replace entities (tokens, ENS names, addresses)
+        // Step 3: Replace entities based on orchestrator's suggestions
         console.log("Replacing entities...");
         const { cleanedInput, entities } = await replaceEntities(cleanContent, subgraphUrl);
         console.log("Cleaned input:", cleanedInput);
