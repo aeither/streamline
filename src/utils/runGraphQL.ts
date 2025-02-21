@@ -1,4 +1,7 @@
+import "dotenv/config";
 import { gql, request } from 'graphql-request';
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export const runGraphQL = async (query: string, subgraphUrl: string) => {
   if (!query.trim()) {
