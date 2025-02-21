@@ -16,6 +16,7 @@ export const Queries = pgTable(
   {
     id: serial('id').primaryKey(),
     query: text('query').notNull(),
+    description: text('description').notNull(),
     timestamp: integer('timestamp').notNull(),
     embedding: vector('embedding', { dimensions: 1536 }),
   }

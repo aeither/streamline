@@ -4,10 +4,15 @@ import { db } from '../database/db'
 import { Documents, Queries } from "../database/schema"
 import { generateEmbedding } from "./openai"
 
+interface Query {
+    query: string
+    description: string
+}
 
 export interface VectorQueryResult {
     id: number
     query: string
+    description: string
     timestamp: number
     similarity: number
 }
@@ -22,14 +27,21 @@ export interface VectorDocumentResult {
 
 export class Embeddings {
     // Insert a query with embedding
-    async insertQuery(query: string): Promise<number> {
-        const embedding = await generateEmbedding(query)
+    async insertQuery({ query, description }: Query): Promise<number> {
+        // Generate embeddings for both query and description and combine them
+        const [queryEmbedding, descriptionEmbedding] = await Promise.all([
+            generateEmbedding(query),
+            generateEmbedding(description)
+        ])
+        
+        // Average the embeddings for a combined representation
+        const embedding = queryEmbedding.map((val, idx) => (val + descriptionEmbedding[idx]) / 2)
         const timestamp = Math.floor(Date.now() / 1000)
 
-        // TODO: create description field and embed description for cosine similarity
         const [result] = await db.insert(Queries)
             .values({
                 query,
+                description,
                 timestamp,
                 embedding,
             })
@@ -63,6 +75,7 @@ export class Embeddings {
         const results = await db.select({
             id: Queries.id,
             query: Queries.query,
+            description: Queries.description,
             timestamp: Queries.timestamp,
             similarity,
         })

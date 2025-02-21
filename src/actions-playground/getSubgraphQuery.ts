@@ -2,9 +2,12 @@ import { cerebras } from '@ai-sdk/cerebras';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
-interface QueryVariables {
-    [key: string]: string | undefined;
-}
+//** Extract required variables from the context */
+// 1. Look for addresses, account IDs, or other values that could fill the required variables
+// 2. For each variable you find, provide its value
+// 3. List any variables you couldn't find in missingVariables
+// 4. Explain your reasoning
+// 5. Return the variables as a JSON object
 
 export async function getSubgraphQuery(input: string, context: string): Promise<string> {
     try {

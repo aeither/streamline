@@ -1,7 +1,14 @@
-import { Embeddings } from "../../src/utils/embeddings";
+import { Embeddings } from "../utils/embeddings";
 
-const QUERIES = [
-  `{
+type Query = {
+  description: string;
+  query: string;
+};
+
+const QUERIES: Query[] = [
+  {
+    description: "Fetch details of a specific pool",
+    query: `{
   pool(id: "$TOKEN_ADDRESS") {
     id
     totalUnits
@@ -25,17 +32,22 @@ const QUERIES = [
       isConnected
     }
   }
-}
-`,
-    `{
+}`
+  },
+  {
+    description: "Get first 20 tokens",
+    query: `{
   tokens(first: 20) {
     id
     symbol
     name
     underlyingAddress
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Fetch streams for a specific receiver",
+    query: `{
   streams(where: {receiver: "$ADDRESS"}) {
     currentFlowRate
     token {
@@ -48,8 +60,11 @@ const QUERIES = [
       id
     }
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Get stream details between specific sender and receiver",
+    query: `{
   streams(where:{
     sender: "$SENDER_ADDRESS"
     receiver: "$RECEIVER_ADDRESS"
@@ -63,8 +78,11 @@ const QUERIES = [
     currentFlowRate
     streamedUntilUpdatedAt
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Fetch recent flow updated events",
+    query: `{
   flowUpdatedEvents(first: 10, orderBy: timestamp, orderDirection: desc) {
     oldFlowRate
     flowRate
@@ -81,8 +99,11 @@ const QUERIES = [
       }
     }
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Get token statistics for a specific token",
+    query: `{
   tokenStatistics(where: {
     id: "$TOKEN_ADDRESS"
   }) {
@@ -92,8 +113,11 @@ const QUERIES = [
     totalOutflowRate
     totalAmountDistributedUntilUpdatedAt
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Fetch account details including inflows and outflows",
+    query: `{
   accounts(where: {
     id: "$ACCOUNT_ADDRESS"
   }) {
@@ -124,8 +148,11 @@ const QUERIES = [
       totalNetFlowRate
     }
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Get first 30 pools",
+    query: `{
   pools(first: 30) {
     totalUnits
     totalMembers
@@ -139,8 +166,11 @@ const QUERIES = [
       id
     }
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Fetch pools for a specific user",
+    query: `{
   pools(
     first: 20
     where: {poolMembers_: {account: "$USER_ADDRESS"}}
@@ -154,8 +184,11 @@ const QUERIES = [
       symbol
     }
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Get pools for a specific token",
+    query: `{
   pools(where: {token: "$TOKEN_ADDRESS"}) {
     createdAtBlockNumber
     createdAtTimestamp
@@ -171,8 +204,11 @@ const QUERIES = [
       symbol
     }
   }
-}`,
-    `{
+}`
+  },
+  {
+    description: "Fetch pools for a specific admin",
+    query: `{
   pools(first: 20, where: {admin: "$ADMIN_ADDRESS"}) {
     totalUnits
     totalMembers
@@ -185,18 +221,22 @@ const QUERIES = [
     }
   }
 }`
-]
+  }
+];
 
 async function main() {
-    const embeddings = new Embeddings();
+  const embeddings = new Embeddings();
 
-    for (let i = 0; i < QUERIES.length; i++) {
-        const query = QUERIES[i];
-        console.log('processing query=', i + 1);
-        await embeddings.insertQuery(query);
-    }
+  for (let i = 0; i < QUERIES.length; i++) {
+    const query = QUERIES[i];
+    console.log('processing query=', i + 1);
+    await embeddings.insertQuery({
+      query: query.query,
+      description: query.description
+    });
+  }
 
-    console.log('All queries processed and inserted into the vector database.');
+  console.log('All queries processed and inserted into the vector database.');
 }
 
 await main();

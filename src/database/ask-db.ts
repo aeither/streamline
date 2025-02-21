@@ -1,5 +1,5 @@
-import { extractContextForQuestion } from "../../src/actions-playground/extractContextForQuestion";
-import { getSubgraphQuery } from "../../src/actions-playground/getSubgraphQuery";
+import { extractContextForQuestion } from "../actions-playground/extractContextForQuestion";
+import { getSubgraphQuery } from "../actions-playground/getSubgraphQuery";
 
 async function getFirstContext(question: string) {
     try {
