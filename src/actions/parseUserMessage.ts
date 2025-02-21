@@ -1,7 +1,7 @@
 import { cerebras } from '@ai-sdk/cerebras';
-import { generateObject, generateText } from 'ai';
+import { generateObject } from 'ai';
 import { z } from 'zod';
-import { runGeneratedQuery } from '../utils/runGeneratedQuery';
+import { runGraphQL } from '../utils/runGraphQL';
 
 type TokenQueryResult = {
   tokens: Array<{
@@ -21,7 +21,7 @@ async function findTokenAddress(symbol: string, subgraphUrl: string): Promise<st
     }`;
 
     try {
-        const resultStr = await runGeneratedQuery(query, subgraphUrl);
+        const resultStr = await runGraphQL(query, subgraphUrl);
         const result = JSON.parse(resultStr) as TokenQueryResult;
         const tokens = result?.tokens || [];
         const token = tokens[0];

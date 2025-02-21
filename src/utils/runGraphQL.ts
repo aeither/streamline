@@ -1,6 +1,9 @@
+import "dotenv/config";
 import { gql, request } from 'graphql-request';
 
-export const runGeneratedQuery = async (query: string, subgraphUrl: string) => {
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+export const runGraphQL = async (query: string, subgraphUrl: string) => {
   if (!query.trim()) {
     throw new Error('Query cannot be empty');
   }

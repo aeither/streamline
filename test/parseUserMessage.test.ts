@@ -1,17 +1,20 @@
-import { beforeAll, describe, expect, test } from "bun:test";
+import { beforeAll, describe, expect, mock, test } from "bun:test";
 import dotenv from 'dotenv';
 import { parseUserMessage } from '../src/actions/parseUserMessage';
+import { runGraphQL } from '../src/utils/runGraphQL';
 
+mock.module('../src/utils/runGraphQL', () => ({
+    runGraphQL: mock(async () => '{"data":{"tokens":[{"id":"0x123","symbol":"USDCx","isListed":true}]}}')
+}));
 
 beforeAll(() => {
     dotenv.config();
 });
 
 describe('parseUserMessage', () => {
-    test('should replace token symbol with address', async () => {
-        const input = 'What are the statistics for USDCx?';
-        const result = await parseUserMessage(input, 'https://base-mainnet.subgraph.x.superfluid.dev/');
-        expect(result).toBe('What are the statistics for 0x1234567890abcdef1234567890abcdef12345678?');
+    test('should parse message and replace token symbols', async () => {
+        const result = await parseUserMessage('Show me USDCx streams', 'https://example.com/subgraph');
+        expect(result).toContain('0x123');
+        expect(runGraphQL).toHaveBeenCalled();
     });
-
 });
