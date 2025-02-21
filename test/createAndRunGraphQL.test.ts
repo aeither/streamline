@@ -1,6 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, mock, test } from "bun:test";
 import dotenv from 'dotenv';
 import { createAndRunGraphQL } from '../src/actions/createAndRunGraphQL';
+import { runGraphQL } from '../src/utils/runGraphQL';
 
 // Mock dependencies
 const mockDetermineTemplate = mock(async (input: string) => {
@@ -27,38 +28,36 @@ const mockDetermineTemplate = mock(async (input: string) => {
     throw new Error('Unknown query type');
 });
 
-const mockRunQuery = mock(async (query: string, subgraphUrl: string) => {
-    if (!subgraphUrl || !subgraphUrl.includes('subgraph.x.superfluid.dev')) {
-        throw new Error('Invalid subgraph URL');
-    }
-    
-    if (query.includes('streams')) {
-        return JSON.stringify({
-            data: {
-                streams: [
-                    {
-                        token: { symbol: 'ETHx' },
-                        currentFlowRate: '1000000000',
-                        sender: { id: '0x123' },
-                        receiver: { id: '0x456' }
-                    }
-                ]
-            }
-        });
-    }
-    if (query.includes('token')) {
-        return JSON.stringify({
-            data: {
-                token: {
-                    symbol: 'ETHx',
-                    totalSupply: '1000000000000000000',
-                    totalNumberOfActiveStreams: '100'
+mock.module('../src/utils/runGraphQL', () => ({
+    runGraphQL: mock(async () => '{"data":{"streams":[]}}')
+}));
+
+mock.module('../src/actions/determineQueryTemplate', () => ({
+    determineQueryTemplate: mockDetermineTemplate,
+    applyTemplate: (template: any) => {
+        // Simple mock implementation of applyTemplate
+        if (template.type === 'streams') {
+            return `{
+                streams(where: {receiver: "${template.variables.ADDRESS}"}) {
+                    currentFlowRate
+                    token { symbol }
+                    sender { id }
+                    receiver { id }
                 }
-            }
-        });
+            }`;
+        }
+        if (template.type === 'tokenStatistics') {
+            return `{
+                token(id: "${template.variables.TOKEN_ADDRESS}") {
+                    symbol
+                    totalSupply
+                    totalNumberOfActiveStreams
+                }
+            }`;
+        }
+        throw new Error('Unknown template type');
     }
-    throw new Error('Query failed');
-});
+}));
 
 beforeAll(() => {
     dotenv.config();
@@ -66,36 +65,6 @@ beforeAll(() => {
 
 beforeEach(() => {
     // Reset mocks before each test
-    mock.module('../src/actions/determineQueryTemplate', () => ({
-        determineQueryTemplate: mockDetermineTemplate,
-        applyTemplate: (template: any) => {
-            // Simple mock implementation of applyTemplate
-            if (template.type === 'streams') {
-                return `{
-                    streams(where: {receiver: "${template.variables.ADDRESS}"}) {
-                        currentFlowRate
-                        token { symbol }
-                        sender { id }
-                        receiver { id }
-                    }
-                }`;
-            }
-            if (template.type === 'tokenStatistics') {
-                return `{
-                    token(id: "${template.variables.TOKEN_ADDRESS}") {
-                        symbol
-                        totalSupply
-                        totalNumberOfActiveStreams
-                    }
-                }`;
-            }
-            throw new Error('Unknown template type');
-        }
-    }));
-
-    mock.module('../src/actions/runGeneratedQuery', () => ({
-        runGeneratedQuery: mockRunQuery
-    }));
 });
 
 describe('createAndRunGraphQL', () => {
@@ -132,8 +101,8 @@ describe('createAndRunGraphQL', () => {
         });
 
         test('should propagate query execution errors', async () => {
-            mock.module('../src/actions/runGeneratedQuery', () => ({
-                runGeneratedQuery: mock(async () => {
+            mock.module('../src/utils/runGraphQL', () => ({
+                runGraphQL: mock(async () => {
                     throw new Error('Query execution failed');
                 })
             }));
@@ -169,5 +138,11 @@ describe('createAndRunGraphQL', () => {
                 createAndRunGraphQL('Show me streams', '')
             ).rejects.toThrow('Invalid subgraph URL');
         });
+    });
+
+    test('should generate and run a query', async () => {
+        const result = await createAndRunGraphQL('Show me all streams', 'https://example.com/subgraph');
+        expect(result).toBe('{"data":{"streams":[]}}');
+        expect(runGraphQL).toHaveBeenCalled();
     });
 });
