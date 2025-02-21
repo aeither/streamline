@@ -26,6 +26,7 @@ export class Embeddings {
         const embedding = await generateEmbedding(query)
         const timestamp = Math.floor(Date.now() / 1000)
 
+        // TODO: create description field and embed description for cosine similarity
         const [result] = await db.insert(Queries)
             .values({
                 query,

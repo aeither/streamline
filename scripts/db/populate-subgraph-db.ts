@@ -1,6 +1,32 @@
 import { Embeddings } from "../../src/utils/embeddings";
 
 const QUERIES = [
+  `{
+  pool(id: "$TOKEN_ADDRESS") {
+    id
+    totalUnits
+    totalMembers
+    perUnitFlowRate
+    updatedAtTimestamp
+    flowRate
+    admin {
+      id
+    }
+    token {
+      id
+      symbol
+    }
+    poolMembers {
+      id
+      units
+      account {
+        id
+      }
+      isConnected
+    }
+  }
+}
+`,
     `{
   tokens(first: 20) {
     id

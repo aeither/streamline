@@ -4,14 +4,14 @@ import { z } from 'zod';
 
 const chains = [
     {
-        name: 'base',
-        url: 'https://base-mainnet.subgraph.x.superfluid.dev',
-        aliases: ['base mainnet', 'base-mainnet', 'base network', 'base chain'],
-    },
-    {
         name: 'ethereum',
         url: 'https://eth-mainnet.subgraph.x.superfluid.dev',
         aliases: ['eth', 'eth mainnet', 'ethereum mainnet', 'mainnet'],
+    },
+    {
+        name: 'base',
+        url: 'https://base-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['base mainnet', 'base-mainnet', 'base network', 'base chain'],
     },
     {
         name: 'polygon',
@@ -19,9 +19,9 @@ const chains = [
         aliases: ['matic', 'polygon mainnet', 'polygon network'],
     },
     {
-        name: 'avalanche',
-        url: 'https://avalanche-mainnet.subgraph.x.superfluid.dev',
-        aliases: ['avax', 'avalanche mainnet', 'avalanche network'],
+        name: 'optimism',
+        url: 'https://optimism-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['optimism mainnet', 'optimism network', 'op mainnet'],
     },
     {
         name: 'arbitrum',
@@ -29,9 +29,19 @@ const chains = [
         aliases: ['arbitrum one', 'arbitrum mainnet', 'arbitrum network'],
     },
     {
-        name: 'optimism',
-        url: 'https://optimism-mainnet.subgraph.x.superfluid.dev',
-        aliases: ['optimism mainnet', 'optimism network', 'op mainnet'],
+        name: 'gnosis',
+        url: 'https://xdai-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['xdai', 'gnosis chain', 'gnosis mainnet'],
+    },
+    {
+        name: 'avalanche',
+        url: 'https://avalanche-c.subgraph.x.superfluid.dev',
+        aliases: ['avax', 'avalanche mainnet', 'avalanche network', 'avalanche c'],
+    },
+    {
+        name: 'bsc',
+        url: 'https://bsc-mainnet.subgraph.x.superfluid.dev',
+        aliases: ['binance smart chain', 'bnb smart chain', 'bsc mainnet'],
     },
     {
         name: 'celo',
@@ -39,35 +49,40 @@ const chains = [
         aliases: ['celo mainnet', 'celo network'],
     },
     {
-        name: 'gnosis',
-        url: 'https://gnosis-mainnet.subgraph.x.superfluid.dev',
-        aliases: ['xdai', 'gnosis chain', 'gnosis mainnet'],
+        name: 'degen',
+        url: 'https://degenchain.subgraph.x.superfluid.dev',
+        aliases: ['degen chain', 'degen mainnet', 'degen network'],
     },
     {
         name: 'scroll',
         url: 'https://scroll-mainnet.subgraph.x.superfluid.dev',
         aliases: ['scroll mainnet', 'scroll network'],
     },
-    {
-        name: 'degen',
-        url: 'https://degen-mainnet.subgraph.x.superfluid.dev',
-        aliases: ['degen chain', 'degen mainnet', 'degen network'],
-    },
     // Testnets
+    {
+        name: 'fuji',
+        url: 'https://avalanche-fuji.subgraph.x.superfluid.dev',
+        aliases: ['avalanche fuji', 'avalanche testnet', 'fuji testnet'],
+    },
     {
         name: 'sepolia',
         url: 'https://eth-sepolia.subgraph.x.superfluid.dev',
         aliases: ['eth sepolia', 'ethereum sepolia', 'sepolia testnet'],
     },
     {
-        name: 'mumbai',
-        url: 'https://polygon-mumbai.subgraph.x.superfluid.dev',
-        aliases: ['polygon mumbai', 'polygon testnet', 'mumbai testnet'],
+        name: 'optimism-sepolia',
+        url: 'https://optimism-sepolia.subgraph.x.superfluid.dev',
+        aliases: ['optimism sepolia testnet'],
     },
     {
-        name: 'fuji',
-        url: 'https://avalanche-fuji.subgraph.x.superfluid.dev',
-        aliases: ['avalanche fuji', 'avalanche testnet', 'fuji testnet'],
+        name: 'scroll-sepolia',
+        url: 'https://scroll-sepolia.subgraph.x.superfluid.dev',
+        aliases: ['scroll sepolia testnet'],
+    },
+    {
+        name: 'base-sepolia',
+        url: 'https://base-sepolia.subgraph.x.superfluid.dev',
+        aliases: ['base sepolia testnet'],
     },
 ];
 
