@@ -1,7 +1,6 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
-import { getSubgraphQuery } from "./actions/getSubgraphQuery";
 import { parseUserMessage } from "./actions/parseUserMessage";
 import { plan } from "./actions/plannerAgent";
 import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
@@ -37,16 +36,16 @@ client.on("messageCreate", async (message: Message) => {
         }
 
         // Remove the bot's mention from the message content
-        const cleanContent = message.content.replace(
-            client.user ? new RegExp(`<@!?${client.user.id}>`, 'g') : /^/, 
+        const cleanMessage = message.content.replace(
+            client.user ? new RegExp(`<@!?${client.user.id}>`, 'g') : /^/,
             ''
         ).trim();
 
         // Step 1: Plan query execution
         console.log("Planning query execution...");
-        const queryPlan = await plan(cleanContent);
+        const queryPlan = await plan(cleanMessage);
         console.log("Query execution plan:", queryPlan);
-        
+
         if (!queryPlan.shouldQueryBlockchain) {
             console.log("Providing immediate response");
             await message.reply(queryPlan.immediateResponse || "I understand your question, but I'm not sure how to answer it.");
@@ -55,25 +54,23 @@ client.on("messageCreate", async (message: Message) => {
 
         // Step 2: Resolve subgraph URL
         console.log("Resolving Superfluid subgraph URL...");
-        const subgraphUrl = await resolveSubgraphUrl(cleanContent);
+        const subgraphUrl = await resolveSubgraphUrl(cleanMessage);
         console.log("Using subgraph:", subgraphUrl);
 
-        // Step 3: Parse user message and generate query
+        // Step 3: Parse user message and run query
         console.log("Parsing user message...");
-        const parsedMessage = await parseUserMessage(cleanContent, subgraphUrl);
+        const parsedMessage = await parseUserMessage(cleanMessage, subgraphUrl);
         console.log("Parsed message:", parsedMessage);
-        
-        console.log("Generating Subgraph query...");
-        const query = await getSubgraphQuery(parsedMessage);
-        console.log("Generated query:", query);
 
         // Step 4: Run the query
-        const result = await createAndRunGraphQL(query, subgraphUrl);
+        console.log("Running GraphQL query...");
+        const result = await createAndRunGraphQL(parsedMessage, subgraphUrl);
+        console.log("Query result:", result);
 
         // Step 5: Synthesize response
         console.log("Synthesizing response...");
-        const response = await synthetizeResponse(result, cleanContent);
-        
+        const response = await synthetizeResponse(result, cleanMessage);
+
         // Ensure the response fits within Discord's message limit
         const truncatedResponse = response.slice(0, 19999);
         await message.reply(truncatedResponse || "I couldn't generate a response.");
