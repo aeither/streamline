@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import dotenv from 'dotenv';
-import { determineQueryTemplate, applyTemplate } from '../src/actions/determineQueryTemplate';
+import { applyTemplate, determineQueryTemplate } from '../src/actions/determineQueryTemplate';
 
 beforeAll(() => {
     dotenv.config();

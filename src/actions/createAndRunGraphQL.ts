@@ -1,5 +1,5 @@
+import { applyTemplate, determineQueryTemplate } from '../actions/determineQueryTemplate';
 import { runGeneratedQuery } from '../utils/runGeneratedQuery';
-import { applyTemplate, determineQueryTemplate } from './determineQueryTemplate';
 
 export const createAndRunGraphQL = async (input: string, subgraphUrl: string): Promise<string> => {
     try {

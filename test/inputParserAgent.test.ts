@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, mock, test } from "bun:test";
 import dotenv from 'dotenv';
-import { parseUserInput } from '../src/actions/inputParserAgent';
+import { parseUserInput } from '../src/actions-playground/inputParserAgent';
 import { runGeneratedQuery } from '../src/utils/runGeneratedQuery';
 
 // Mock runGeneratedQuery
