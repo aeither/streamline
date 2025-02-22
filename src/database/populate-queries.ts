@@ -221,6 +221,24 @@ const QUERIES: Query[] = [
     }
   }
 }`
+  },
+  {
+    description: "Get total number of active streams for a token",
+    query: `{
+  tokenStatistic(id: "$TOKEN_ADDRESS") {
+    totalNumberOfActiveStreams
+  }
+}`
+  },
+  {
+    description: "Fetch all super tokens",
+    query: `{
+  tokens(where: {isSuperToken: true}) {
+    id
+    symbol
+    name
+  }
+}`
   }
 ];
 

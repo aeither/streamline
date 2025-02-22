@@ -1,7 +1,10 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
+import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
+import { parseUserMessage } from "./actions/parseUserMessage";
 import { plan } from "./actions/plannerAgent";
-import { processGraphQLQuery } from "./workflow";
+import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
+import { synthetizeResponse } from "./actions/synthetizeResponse";
 
 dotenv.config();
 
@@ -49,7 +52,24 @@ client.on("messageCreate", async (message: Message) => {
             return;
         }
 
-        const response = await processGraphQLQuery(cleanMessage);
+        // Step 2: Resolve subgraph URL
+        console.log("Resolving Superfluid subgraph URL...");
+        const subgraphUrl = await resolveSubgraphUrl(cleanMessage);
+        console.log("Using subgraph:", subgraphUrl);
+
+        // Step 3: Parse user message and run query
+        console.log("Parsing user message...");
+        const parsedMessage = await parseUserMessage(cleanMessage, subgraphUrl);
+        console.log("Parsed message:", parsedMessage);
+
+        // Step 4: Run the query
+        console.log("Running GraphQL query...");
+        const result = await createAndRunGraphQL(parsedMessage, subgraphUrl);
+        console.log("Query result:", result);
+
+        // Step 5: Synthesize response
+        console.log("Synthesizing response...");
+        const response = await synthetizeResponse(result, cleanMessage);
 
         // Ensure the response fits within Discord's message limit
         const truncatedResponse = response.slice(0, 19999);

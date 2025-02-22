@@ -8,7 +8,7 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   const input = value.replaceAll('\n', ' ')
 
   const { data } = await openai.embeddings.create({
-    model: 'text-embedding-ada-002',
+    model: 'text-embedding-3-small',
     input,
   })
 

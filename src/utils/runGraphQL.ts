@@ -1,9 +1,9 @@
-import "dotenv/config";
+// import "dotenv/config";
 import { gql, request } from 'graphql-request';
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-export const runGraphQL = async (query: string, subgraphUrl: string) => {
+export const runGraphQL = async (subgraphUrl: string, query: string, variables?: Record<string, string>) => {
   if (!query.trim()) {
     throw new Error('Query cannot be empty');
   }
@@ -12,27 +12,16 @@ export const runGraphQL = async (query: string, subgraphUrl: string) => {
   }
 
   try {
-    // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-    let parsedQuery;
-    try {
-      parsedQuery = gql`${query}`;
-    } catch (parseError) {
-      console.error('Error parsing GraphQL query:', parseError);
-      throw new Error('Invalid GraphQL query syntax');
-    }
+    const parsedQuery = gql`${query}`;
 
-    // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-    let data;
-    try {
-      data = await request(subgraphUrl, parsedQuery);
-    } catch (requestError) {
-      console.error('Error executing GraphQL query:', requestError);
-      throw new Error('Failed to execute query');
-    }
+    const data = await request(subgraphUrl, parsedQuery, variables);
 
     return JSON.stringify(data, null, 2);
   } catch (error) {
     console.error('Error executing GraphQL query:', error);
+    if (error instanceof Error) {
+      throw new Error(`Failed to execute query: ${error.message}`);
+    }
     throw new Error('Failed to execute query');
   }
 };
