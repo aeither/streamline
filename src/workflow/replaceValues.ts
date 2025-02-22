@@ -61,12 +61,8 @@ export async function replaceValues(
     subgraphUrl: string
 ): Promise<Record<string, string>> {
     const output = { ...input };
-    const chainName = output.chain || "mainnet"; // Used for subgraph context only
 
     for (const [key, value] of Object.entries(output)) {
-        // Skip chain field
-        if (key === "chain") continue;
-
         // ENS: Ends with ".eth"
         if (value.endsWith(".eth")) {
             try {

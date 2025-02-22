@@ -61,7 +61,7 @@ export class Embeddings {
 
     async queryQuery(
         queryString: string,
-        limit = 3
+        limit = 1
     ): Promise<VectorQueryResult[]> {
         const embedding = await generateEmbedding(queryString)
         const similarity = sql<number>`1 - (${cosineDistance(Queries.embedding, embedding)})`

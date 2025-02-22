@@ -186,7 +186,6 @@ const QUERIES: Query[] = [
       id
       symbol
     }
-    flowRate
   }
 }`
   },

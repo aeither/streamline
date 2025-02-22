@@ -30,6 +30,8 @@
 		"discord.js": "^14.18.0",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.39.3",
+		"graffle": "^0.0.0",
+		"graphql": "^16.10.0",
 		"graphql-request": "^7.1.2",
 		"openai": "^4.85.3",
 		"pg": "^8.13.3",

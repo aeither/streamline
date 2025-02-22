@@ -114,7 +114,7 @@ Examples:
 
         // If a chain was detected, find its URL
         if (object.chainName) {
-            const selectedChain = chains.find(chain => 
+            const selectedChain = chains.find(chain =>
                 chain.name.toLowerCase() === object.chainName.toLowerCase() ||
                 chain.aliases.some(alias => alias.toLowerCase() === object.chainName.toLowerCase())
             );
@@ -124,6 +124,7 @@ Examples:
         // If no chain was detected or found, default to Base
         const baseChain = chains.find(chain => chain.name === 'base');
         if (!baseChain) throw new Error('Default chain (Base) not found in configuration');
+
         return baseChain.url;
 
     } catch (error) {

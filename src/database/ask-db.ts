@@ -15,5 +15,5 @@ async function getFirstContext(question: string) {
 }
 
 // Example usage
-const question = 'What pools is 0x1234 member of';
+const question = 'What pools a specific user 0x1234 is a member of or part of';
 getFirstContext(question);
