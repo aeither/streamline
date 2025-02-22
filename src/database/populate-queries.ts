@@ -1,4 +1,6 @@
 import { Embeddings } from "../utils/embeddings";
+import { db } from "./db";
+import { Queries } from "./schema";
 
 type Query = {
   description: string;
@@ -7,7 +9,7 @@ type Query = {
 
 const QUERIES: Query[] = [
   {
-    description: "Fetch details of a specific pool",
+    description: "Fetch pool details for a specific token ETHx, USDCx",
     query: `{
   pool(id: "$TOKEN_ADDRESS") {
     id
@@ -169,12 +171,13 @@ const QUERIES: Query[] = [
 }`
   },
   {
-    description: "Fetch pools for a specific user",
+    description: "What pools a specific user 0x1234 is a member of or part of",
     query: `{
   pools(
     first: 20
     where: {poolMembers_: {account: "$USER_ADDRESS"}}
   ) {
+    id
     totalUnits
     totalMembers
     flowRate
@@ -183,6 +186,7 @@ const QUERIES: Query[] = [
       id
       symbol
     }
+    flowRate
   }
 }`
   },
@@ -256,5 +260,20 @@ async function main() {
 
   console.log('All queries processed and inserted into the vector database.');
 }
+await main()
+.then(() => process.exit(0))
+.catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
-await main();
+
+// async function resetQueriesTable() {
+//   try {
+//     await db.delete(Queries);
+//     console.log('Queries table has been reset.');
+//   } catch (error) {
+//     console.error('Error resetting Queries table:', error);
+//   }
+// }
+// resetQueriesTable().then(() => process.exit(0))

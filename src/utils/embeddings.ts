@@ -28,14 +28,7 @@ export interface VectorDocumentResult {
 export class Embeddings {
     // Insert a query with embedding
     async insertQuery({ query, description }: Query): Promise<number> {
-        // Generate embeddings for both query and description and combine them
-        const [queryEmbedding, descriptionEmbedding] = await Promise.all([
-            generateEmbedding(query),
-            generateEmbedding(description)
-        ])
-        
-        // Average the embeddings for a combined representation
-        const embedding = queryEmbedding.map((val, idx) => (val + descriptionEmbedding[idx]) / 2)
+        const embedding = await generateEmbedding(description)
         const timestamp = Math.floor(Date.now() / 1000)
 
         const [result] = await db.insert(Queries)
@@ -68,7 +61,7 @@ export class Embeddings {
 
     async queryQuery(
         queryString: string,
-        limit = 1
+        limit = 3
     ): Promise<VectorQueryResult[]> {
         const embedding = await generateEmbedding(queryString)
         const similarity = sql<number>`1 - (${cosineDistance(Queries.embedding, embedding)})`

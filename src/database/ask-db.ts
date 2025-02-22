@@ -7,13 +7,13 @@ async function getFirstContext(question: string) {
         console.log('First context:', context);
         if (!context) throw new Error('Could not extract context');
 
-        const query = await getSubgraphQuery(question, context);
-        console.log("🚀 ~ getFirstContext ~ query:", query)
+        // const query = await getSubgraphQuery(question, context);
+        // console.log("🚀 ~ getFirstContext ~ query:", query)
     } catch (error) {
         console.error('Error extracting context:', error);
     }
 }
 
 // Example usage
-const question = 'Show me the recent money streams on Avalanche';
+const question = 'What pools is 0x1234 member of';
 getFirstContext(question);
