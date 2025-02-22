@@ -66,3 +66,19 @@ npx drizzle-kit studio
 
 bun default timeout for tests is 5000 (5 seconds).
 Adsut with `bun test --timeout 15000`
+
+## Create, Select, and Reset HNSW index
+
+```sql
+CREATE INDEX IF NOT EXISTS queries_embedding_hnsw_idx ON queries USING hnsw (embedding vector_cosine_ops);
+
+SELECT
+  indexname,
+  indexdef
+FROM
+  pg_indexes
+WHERE
+  tablename = 'queries';
+
+DROP INDEX IF EXISTS queries_embedding_hnsw_idx;
+```

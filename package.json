@@ -26,6 +26,7 @@
 		"@ai-sdk/openai": "^1.1.9",
 		"@ai-sdk/swarm": "^0.1.35",
 		"@openrouter/ai-sdk-provider": "^0.2.1",
+		"@urql/core": "^5.1.0",
 		"ai": "^4.1.35",
 		"discord.js": "^14.18.0",
 		"dotenv": "^16.4.7",
@@ -36,6 +37,7 @@
 		"openai": "^4.85.3",
 		"pg": "^8.13.3",
 		"postgres": "^3.4.5",
+		"urql": "^4.2.1",
 		"viem": "^2.23.4",
 		"zod": "^3.24.2"
 	}
