@@ -1,6 +1,7 @@
 import { ChannelType, Client, GatewayIntentBits, type Message } from "discord.js";
 import dotenv from "dotenv";
 import { createAndRunGraphQL } from "./actions/createAndRunGraphQL";
+import { handleOnChainQuery } from './actions/onChainAgent';
 import { parseUserMessage } from "./actions/parseUserMessage";
 import { plan } from "./actions/plannerAgent";
 import { resolveSubgraphUrl } from "./actions/resolveSubgraphUrl";
@@ -49,6 +50,20 @@ client.on("messageCreate", async (message: Message) => {
         if (!queryPlan.shouldQueryBlockchain) {
             console.log("Providing immediate response");
             await message.reply(queryPlan.immediateResponse || "I understand your question, but I'm not sure how to answer it.");
+            return;
+        }
+
+        // Handle on-chain read requests
+        if (queryPlan.suggestedAction === 'onchain_read') {
+            console.log("Performing on-chain read");
+            const onChainResult = await handleOnChainQuery(message.content);
+            
+            if (onChainResult.error) {
+                await message.reply(`Error reading on-chain data: ${onChainResult.error}`);
+                return;
+            }
+            
+            await message.reply(onChainResult.query);
             return;
         }
 

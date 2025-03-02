@@ -5,7 +5,7 @@ import { z } from 'zod';
 interface QueryPlan {
     shouldQueryBlockchain: boolean;
     immediateResponse?: string;
-    suggestedAction?: 'query_subgraph' | 'explain_concept' | 'show_help' | 'list_commands';
+    suggestedAction?: 'query_subgraph' | 'explain_concept' | 'show_help' | 'list_commands' | 'onchain_read';
     requiredTools?: Array<'token_resolver' | 'ens_resolver' | 'address_validator'>;
     reasoning: string;
 }
@@ -27,7 +27,7 @@ export const plan = async (input: string): Promise<QueryPlan> => {
             schema: z.object({
                 shouldQueryBlockchain: z.boolean(),
                 immediateResponse: z.string().optional(),
-                suggestedAction: z.enum(['query_subgraph', 'explain_concept', 'show_help', 'list_commands']),
+                suggestedAction: z.enum(['query_subgraph', 'explain_concept', 'show_help', 'list_commands', 'onchain_read']),
                 requiredTools: z.array(z.enum(['token_resolver', 'ens_resolver', 'address_validator'])).optional(),
                 reasoning: z.string(),
             }),
@@ -41,6 +41,7 @@ Action types:
 - explain_concept: For explaining Superfluid concepts without data
 - list_commands: For listing supported features or chains
 - query_subgraph: For any query needing blockchain data
+- onchain_read: For reading data directly from the blockchain
 
 Examples NOT needing blockchain data:
 - "How do I use the bot?" → show_help
