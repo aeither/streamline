@@ -49,7 +49,8 @@ client.on("messageCreate", async (message: Message) => {
 
         if (!queryPlan.shouldQueryBlockchain) {
             console.log("Providing immediate response");
-            await message.reply(queryPlan.immediateResponse || "I understand your question, but I'm not sure how to answer it.");
+            const response = queryPlan.immediateResponse || "I understand your question, but I'm not sure how to answer it.";
+            await message.reply(response);
             return;
         }
 
@@ -63,7 +64,8 @@ client.on("messageCreate", async (message: Message) => {
                 return;
             }
             
-            await message.reply(onChainResult.query);
+            const response = onChainResult.query || "I couldn't retrieve any on-chain data.";
+            await message.reply(response);
             return;
         }
 
@@ -86,9 +88,11 @@ client.on("messageCreate", async (message: Message) => {
         console.log("Synthesizing response...");
         const response = await synthetizeResponse(result, cleanMessage);
 
-        // Ensure the response fits within Discord's message limit
-        const truncatedResponse = response.slice(0, 19999);
-        await message.reply(truncatedResponse || "I couldn't generate a response.");
+        const finalResponse = response?.trim() 
+            ? response.slice(0, 19999) 
+            : "I couldn't generate a response based on the data. Please try asking in a different way.";
+            
+        await message.reply(finalResponse);
     } catch (error) {
         console.error("Error processing message:", error);
         let errorMessage = "Sorry, something went wrong.";

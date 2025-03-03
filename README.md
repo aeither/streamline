@@ -16,7 +16,18 @@ This project was created using `bun init` in bun v1.1.30. [Bun](https://bun.sh) 
 
 ## Questions
 
+### Knowledge base
+
 What is superfluid?
+
+
+### OnChain Read
+
+Read onchain how many units does 0xB72a04B01BB80DfD6a42ea8E0907B892286113F2 have in the pool 0xEDcCa6c447D41D6EB9719e9C638Ae341C3D60615
+
+How many total connected units in the pool 0xEDcCa6c447D41D6EB9719e9C638Ae341C3D60615?
+
+### Subgraph query
 
 Show me the recent money streams on Avalanche
 
@@ -27,10 +38,3 @@ List all the pools where user 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 is a me
 <!-- With parsed inputs -->
 
 What are the statistics for USDCx on base?
-
-<!-- Give me details about the account 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 -->
-
-What are the pools managed by admin 0xB0A240F3887436A94fC2Af895103350971E271da on base?
-
-Show me all incoming and outgoing streams for address 0xB0A240F3887436A94fC2Af895103350971E271da
-
