@@ -11,27 +11,6 @@ type TokenQueryResult = {
   }>;
 };
 
-async function findTokenAddress(symbol: string, subgraphUrl: string): Promise<string | undefined> {
-    const query = `{
-        tokens(where: {symbol: "${symbol}", isListed: true}) {
-            id
-            symbol
-            isListed
-        }
-    }`;
-
-    try {
-        const resultStr = await runGraphQL(query, subgraphUrl);
-        const result = JSON.parse(resultStr) as TokenQueryResult;
-        const tokens = result?.tokens || [];
-        const token = tokens[0];
-        return token?.id;
-    } catch (error) {
-        console.error('Error finding token address:', error);
-        return undefined;
-    }
-}
-
 export async function parseUserMessage(input: string, subgraphUrl: string): Promise<string> {
     try {
         // Step 1: Extract token symbols
@@ -61,5 +40,26 @@ export async function parseUserMessage(input: string, subgraphUrl: string): Prom
     } catch (error) {
         console.error('Error parsing user message:', error);
         return input;
+    }
+}
+
+async function findTokenAddress(symbol: string, subgraphUrl: string): Promise<string | undefined> {
+    const query = `{
+        tokens(where: {symbol: "${symbol}", isListed: true}) {
+            id
+            symbol
+            isListed
+        }
+    }`;
+
+    try {
+        const resultStr = await runGraphQL(query, subgraphUrl);
+        const result = JSON.parse(resultStr) as TokenQueryResult;
+        const tokens = result?.tokens || [];
+        const token = tokens[0];
+        return token?.id;
+    } catch (error) {
+        console.error('Error finding token address:', error);
+        return undefined;
     }
 }

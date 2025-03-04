@@ -26,7 +26,6 @@ This project was created using `bun init` in bun v1.1.30. [Bun](https://bun.sh) 
 
 What is superfluid?
 
-
 ### OnChain Read
 
 Read onchain how many units does 0xB72a04B01BB80DfD6a42ea8E0907B892286113F2 have in the pool 0xEDcCa6c447D41D6EB9719e9C638Ae341C3D60615
