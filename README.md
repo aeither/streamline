@@ -39,6 +39,8 @@ Fetch all super tokens
 
 Get token statistics for token 0xD04383398dD2426297da660F9CCA3d439AF9ce1b on base
 
+What pools a specific user 0x754fc79a1f0ef67fcf5640b51a8f3b29d1efc4b7 is a member of or part of on base?
+
 <!-- What pools a specific user 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 is a member of or part of on base? -->
 
 <!-- Show me the recent money streams on Avalanche -->
