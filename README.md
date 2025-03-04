@@ -35,7 +35,13 @@ How many total connected units in the pool 0xEDcCa6c447D41D6EB9719e9C638Ae341C3D
 
 ### Subgraph query
 
-Show me the recent money streams on Avalanche
+Fetch all super tokens
+
+Get token statistics for token 0xD04383398dD2426297da660F9CCA3d439AF9ce1b on base
+
+<!-- What pools a specific user 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 is a member of or part of on base? -->
+
+<!-- Show me the recent money streams on Avalanche -->
 
 <!-- What are the statistics for the 0x07b24bbd834c1c546ece89ff95f71d9f13a2ebd1 token on Polygon? -->
 

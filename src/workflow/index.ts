@@ -39,6 +39,12 @@ export async function processGraphQLQuery(message: string) {
         let parsedParams: { [key: string]: string };
         try {
             parsedParams = JSON.parse(filledSubgraphParams);
+            // Convert any hex addresses to lowercase
+            for (const key in parsedParams) {
+                if (typeof parsedParams[key] === 'string' && parsedParams[key].startsWith('0x')) {
+                    parsedParams[key] = parsedParams[key].toLowerCase();
+                }
+            }
         } catch (err: unknown) {
             const error = err as Error;
             console.error(`Error parsing subgraph parameters: ${error.message}`);
@@ -50,6 +56,7 @@ export async function processGraphQLQuery(message: string) {
         console.log(`Replaced subgraph parameters: ${JSON.stringify(replacedSubgraphParams)}`);
 
         console.log("Executing GraphQL query...");
+        console.log("query:", subgraphUrl, context, replacedSubgraphParams);
         const result = await runGraphQL(subgraphUrl, context, replacedSubgraphParams);
         console.log(`GraphQL query result: ${result}`);
 
