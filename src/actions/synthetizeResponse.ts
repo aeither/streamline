@@ -3,6 +3,11 @@ import { generateText } from 'ai';
 
 export const synthetizeResponse = async (queryResult: string, userQuestion: string) => {
     try {
+        // Handle empty or invalid query results
+        if (!queryResult || queryResult.trim() === '') {
+            return 'No data was returned from the query. Please try a different question or be more specific.';
+        }
+
         const { text } = await generateText({
             model: cerebras('llama-3.3-70b'),
             system: `You are a friendly and knowledgeable blockchain data analyst. Your task is to:
@@ -20,9 +25,10 @@ Query returned this data: ${queryResult}
 Craft a friendly, joyful, exciting, concise, insightful, simple language response that explains the data.`,
         });
 
-        return text.trim();
+        // Ensure we never return an empty string
+        return text?.trim() || 'I analyzed the data, but I\'m having trouble formulating a response. The query did return some results though.';
     } catch (e) {
         console.error('Error synthesizing response:', e);
-        throw new Error('Failed to synthesize response');
+        return 'I encountered an issue while analyzing the data. Please try asking a different question.';
     }
 };
