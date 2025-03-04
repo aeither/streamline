@@ -1,5 +1,11 @@
 # streamline
 
+> Your AI-powered Discord companion for Superfluid queries and insights
+
+Streamline is a powerful Discord bot that seamlessly integrates with Superfluid Protocol, providing real-time on-chain data and historical insights through natural language queries. Using advanced AI, it understands your questions and chooses the optimal data source - whether that's direct blockchain reads via GOAT Superfluid Plugin or historical data via Subgraph APIs.
+
+# Setup
+
 To install dependencies:
 
 ```bash
@@ -31,10 +37,10 @@ How many total connected units in the pool 0xEDcCa6c447D41D6EB9719e9C638Ae341C3D
 
 Show me the recent money streams on Avalanche
 
-What are the statistics for the 0x07b24bbd834c1c546ece89ff95f71d9f13a2ebd1 token on Polygon?
+<!-- What are the statistics for the 0x07b24bbd834c1c546ece89ff95f71d9f13a2ebd1 token on Polygon? -->
 
 <!-- List all the pools where user 0x754FC79A1F0EF67fCF5640b51a8f3b29d1eFc4B7 is a member on base -->
 
 <!-- With parsed inputs -->
 
-What are the statistics for USDCx on base?
+<!-- What are the statistics for USDCx on base? -->

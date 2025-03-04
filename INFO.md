@@ -1,3 +1,41 @@
+```mermaid
+sequenceDiagram
+    participant User
+    participant Discord Bot
+    participant Planner Agent
+    participant Chain Resolver
+    participant GOAT Superfluid Plugin
+    participant Subgraph API
+    
+    User->>Discord Bot: Send Message
+    Note over Discord Bot: Check if bot mention required
+    
+    Discord Bot->>Planner Agent: Clean message content
+    
+    Planner Agent->>Planner Agent: Evaluate query
+    
+    alt Immediate Response
+        Note over Planner Agent: Types:<br/>- Show Help<br/>- Explain Concept<br/>- List Commands
+        Planner Agent-->>Discord Bot: Return immediateResponse
+        Discord Bot-->>User: Format & send response
+    else On-Chain Read
+        Note over Planner Agent: suggestedAction:<br/>onchain_read
+        Planner Agent->>GOAT Superfluid Plugin: handleOnChainQuery
+        GOAT Superfluid Plugin-->>Discord Bot: Real-time chain data
+        Discord Bot-->>User: Format & send data
+    else Subgraph Query
+        Note over Planner Agent: suggestedAction:<br/>query_subgraph
+        Planner Agent->>Chain Resolver: Resolve network
+        Chain Resolver-->>Subgraph API: Get subgraph URL
+        Subgraph API-->>Discord Bot: Historical/indexed data
+        Discord Bot-->>User: Format & send data
+    end
+
+    alt Error occurs
+        Note over Discord Bot: Handle:<br/>- SDK errors<br/>- Rate limits<br/>- API errors
+        Discord Bot-->>User: Error message
+    end
+```
 
 Workflow
 

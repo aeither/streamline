@@ -12,6 +12,7 @@ export async function extractContextForQuestion(
     }
 
     const searchResults = await embeddings.queryQuery(question);
+    console.log("🚀 ~ searchResults:", searchResults)
     const context = searchResults.map(result => result.query).join('\n\n');
 
     if (context.trim().length === 0) {
