@@ -52,7 +52,7 @@ function convertToWei(amount: string, decimals = 18): string {
 async function resolveENS(ens: string): Promise<string> {
     const address = await publicClient.getEnsAddress({ name: normalize(ens) });
     if (!address) throw new Error(`ENS resolution failed for ${ens}`);
-    return address;
+    return address.toLowerCase(); // Convert resolved address to lowercase
 }
 
 // Type detection and replacement
